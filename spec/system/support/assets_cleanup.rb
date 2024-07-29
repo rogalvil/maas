@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.configure do |config|
   config.after(:suite) do
     $stdout.puts "\n🚮 Cleaning the assets. \n"

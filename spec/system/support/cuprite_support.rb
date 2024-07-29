@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # See https://evilmartians.com/chronicles/system-of-a-test-setting-up-end-to-end-rails-testing
 
 require 'capybara/cuprite'
