@@ -1,7 +1,6 @@
 volumes:
   postgres-data:
 
-
 services:
   postgres:
     image: postgres:14-alpine
@@ -31,7 +30,7 @@ services:
     volumes:
       - type: bind
         source: .
-        target: /workspaces/rails-docker-vscode
+        target: /workspaces/maas
     environment:
       # By default, it uses 3000, which is typically used by Rails.
       PORT: 3333
@@ -43,21 +42,19 @@ services:
       - testing
 
   # The tests container:
-  tests:
-    &app
-    build:
-      &app_build
+  tests: &app
+    build: &app_build
       context: .
       dockerfile: Dockerfile
       target: testing
       args:
         DEVELOPER_UID: ${UID:-1000}
         DEVELOPER_USERNAME: ${USER:-you}
-    image: kurenn/rails-docker-vscode${TESTING_IMAGE_TAG:-:testing}
+    image: rogalvil/maas${TESTING_IMAGE_TAG:-:testing}
 
     volumes:
       # Mount the app code into the app containers:
-      - .:/workspaces/rails-docker-vscode
+      - .:/workspaces/maas
 
     # Keep the stdin open, so we can attach to our app container's process
     # and do things such as byebug, etc:
@@ -85,8 +82,7 @@ services:
     # Specify environment variables available for our app containers. We'll
     # leave a YML anchor in case we need to override or add more variables if
     # needed on each app service:
-    environment:
-      &app_env
+    environment: &app_env
       RAILS_LOG_TO_STDOUT: "true"
       DEBIAN_FRONTEND: dialog
       RAILS_ENV: test
@@ -94,9 +90,10 @@ services:
       # Tells the test suite to use the "chrome" service instead of a local
       # chrome install:
       CHROME_URL: http://chrome:3333
-      CHROME_PUBLIC_URL: ${RAILS_DOCKER_VSCODE_CHROME_PUBLIC_URL:-http://localhost:3333}
+      CHROME_PUBLIC_URL: ${MAAS_CHROME_PUBLIC_URL:-http://localhost:3333}
 
-      DATABASE_URL: postgres://postgres:5432/?encoding=unicode
+      DATABASE_URL:
+        postgres://postgres:5432/?encoding=unicode
         # Simplecov checks for the presence of this variable to generate a report
         # with the format required by codeclimate... which is a bit lame...
     profiles:
@@ -109,10 +106,10 @@ services:
       <<: *app_build
       target: development
 
-    image: kurenn/rails-docker-vscode:development
+    image: rogalvil/maas:development
 
     ports:
-      - ${RAILS_DOCKER_VSCODE_PORT:-3000}:3000
+      - ${MAAS_PORT:-3000}:3000
 
     # The command we want to execute by default when running the container
     command: rails server -b 0.0.0.0

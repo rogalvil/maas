@@ -49,14 +49,14 @@ RUN addgroup --gid ${DEVELOPER_UID} ${DEVELOPER_USERNAME} \
 # (A workaround to a side effect of setting WORKDIR before creating the user)
 RUN userhome=$(eval echo ~${DEVELOPER_USERNAME}) \
  && chown -R ${DEVELOPER_USERNAME}:${DEVELOPER_USERNAME} $userhome \
- && mkdir -p /workspaces/rails-docker-vscode \
- && chown -R ${DEVELOPER_USERNAME}:${DEVELOPER_USERNAME} /workspaces/rails-docker-vscode
+ && mkdir -p /workspaces/maas \
+ && chown -R ${DEVELOPER_USERNAME}:${DEVELOPER_USERNAME} /workspaces/maas
 
 # Add the app's "bin/" directory to PATH:
-ENV PATH=/workspaces/rails-docker-vscode/bin:$PATH
+ENV PATH=/workspaces/maas/bin:$PATH
 
 # Set the app path as the working directory:
-WORKDIR /workspaces/rails-docker-vscode
+WORKDIR /workspaces/maas
 
 # Change to the developer user:
 USER ${DEVELOPER_USERNAME}
@@ -73,7 +73,7 @@ RUN bundle config set --local jobs 4
 FROM development-base AS testing
 
 # Copy the project's Gemfile and Gemfile.lock files:
-COPY --chown=${DEVELOPER_USERNAME} Gemfile* /workspaces/rails-docker-vscode/
+COPY --chown=${DEVELOPER_USERNAME} Gemfile* /workspaces/maas/
 
 # Configure bundler to exclude the gems from the "development" group when
 # installing, so we get the leanest Docker image possible to run tests:
@@ -137,7 +137,7 @@ USER ${DEVELOPER_USERNAME}
 
 # Copy the gems installed in the "testing" stage:
 COPY --from=testing /usr/local/bundle /usr/local/bundle
-COPY --from=testing /workspaces/rails-docker-vscode/ /workspaces/rails-docker-vscode/
+COPY --from=testing /workspaces/maas/ /workspaces/maas/
 
 # Configure bundler to not exclude any gem group, so we now get all the gems
 # specified in the Gemfile:
@@ -160,7 +160,7 @@ ARG DEVELOPER_USERNAME=you
 ARG DEVELOPER_USERNAME=you
 
 # Copy the full contents of the project:
-COPY --chown=${DEVELOPER_USERNAME} . /workspaces/rails-docker-vscode/
+COPY --chown=${DEVELOPER_USERNAME} . /workspaces/maas/
 
 # Compile the assets:
 RUN RAILS_ENV=production SECRET_KEY_BASE=10167c7f7654ed02b3557b05b88ece rails assets:precompile
@@ -223,14 +223,14 @@ FROM runtime AS release
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 
 # Copy the app code and compiled assets from the "builder" stage to the
-# final destination at /workspaces/rails-docker-vscode:
-COPY --from=builder --chown=nobody:nogroup /workspaces/rails-docker-vscode /workspaces/rails-docker-vscode
+# final destination at /workspaces/maas:
+COPY --from=builder --chown=nobody:nogroup /workspaces/maas /workspaces/maas
 
 # Set the container user to 'nobody':
 USER nobody
 
 # Set the RAILS and PORT default values:
-ENV HOME=/workspaces/rails-docker-vscode \
+ENV HOME=/workspaces/maas \
     RAILS_ENV=production \
     RAILS_FORCE_SSL=yes \
     RAILS_LOG_TO_STDOUT=yes \
@@ -241,10 +241,10 @@ ENV HOME=/workspaces/rails-docker-vscode \
 RUN SECRET_KEY_BASE=10167c7f7654ed02b3557b05b88ece rails secret > /dev/null
 
 # Set the installed app directory as the working directory:
-WORKDIR /workspaces/rails-docker-vscode
+WORKDIR /workspaces/maas
 
 # Set the entrypoint script:
-ENTRYPOINT [ "/workspaces/rails-docker-vscode/bin/entrypoint" ]
+ENTRYPOINT [ "/workspaces/maas/bin/entrypoint" ]
 
 # Set the default command:
 CMD [ "puma" ]
