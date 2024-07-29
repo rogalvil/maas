@@ -70,9 +70,6 @@
         // PostCSS Language Support:
         "csstools.postcss",
 
-        // IntelliSense for VS Code:
-        "bradlc.vscode-tailwindcss",
-
         // Pull Request and Issue Provider for GitHub:
         "github.vscode-pull-request-github",
 
@@ -99,10 +96,7 @@
 
         // VSCode plugin for extracting class names from HTML and generate CSS
         // stylesheet for following work;
-        "diz.ecsstractor-port",
-
-        // Tailwind CSS IntelliSense
-        "bradlc.vscode-tailwindcss"
+        "diz.ecsstractor-port"
       ]
     }
   }
