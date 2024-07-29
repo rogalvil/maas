@@ -96,7 +96,10 @@
 
         // VSCode plugin for extracting class names from HTML and generate CSS
         // stylesheet for following work;
-        "diz.ecsstractor-port"
+        "diz.ecsstractor-port",
+
+        // Language Support for Vue
+        "Vue.volar"
       ]
     }
   }
