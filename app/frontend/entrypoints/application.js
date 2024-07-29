@@ -1,28 +1,23 @@
-// To see this message, add the following to the `<head>` section in your
-// views/layouts/application.html.erb
-//
-//    <%= vite_client_tag %>
-//    <%= vite_javascript_tag 'application' %>
-console.log('Vite ⚡️ Rails')
+import * as Turbo from "@hotwired/turbo";
+Turbo.start();
 
-// If using a TypeScript entrypoint file:
-//     <%= vite_typescript_tag 'application' %>
-//
-// If you want to use .jsx or .tsx, add the extension:
-//     <%= vite_javascript_tag 'application.jsx' %>
+import { createApp, defineAsyncComponent } from "vue";
+import TurbolinksAdapter from "vue-turbolinks";
+import vuetify from "~/plugins/vuetify";
 
-console.log('Visit the guide for more information: ', 'https://vite-ruby.netlify.app/guide/rails')
+import App from "~/app";
+const BlogsIndex = defineAsyncComponent(() => import("~/pages/blogs/index"));
+const BlogsShow = defineAsyncComponent(() => import("~/pages/blogs/show"));
 
-// Example: Load Rails libraries in Vite.
-//
-// import * as Turbo from '@hotwired/turbo'
-// Turbo.start()
-//
-// import ActiveStorage from '@rails/activestorage'
-// ActiveStorage.start()
-//
-// // Import all channels.
-// const channels = import.meta.globEager('./**/*_channel.js')
+document.addEventListener("turbo:load", () => {
+  const app = createApp({});
 
-// Example: Import a stylesheet in app/frontend/index.css
-// import '~/index.css'
+  app.use(TurbolinksAdapter);
+  app.use(vuetify);
+
+  app.component("App", App);
+  app.component("BlogsIndex", BlogsIndex);
+  app.component("BlogsShow", BlogsShow);
+
+  app.mount("#app");
+});
