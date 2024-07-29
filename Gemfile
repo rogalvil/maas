@@ -85,3 +85,6 @@ group :test do
   # Generates test vs. code coverage reports
   gem 'simplecov', '~> 0.21.2', require: false
 end
+
+# Use Vite in Rails
+gem 'vite_rails', '~> 3.0', '>= 3.0.17'
