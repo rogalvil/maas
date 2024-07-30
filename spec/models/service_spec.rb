@@ -12,4 +12,16 @@ RSpec.describe Service, type: :model do
     service = build(:service, name: nil)
     expect(service).to_not be_valid
   end
+
+  it 'has many work_schedules' do
+    association = Service.reflect_on_association(:work_schedules)
+    expect(association.macro).to eq :has_many
+  end
+
+  it 'can have many work_schedules' do
+    service = create(:service)
+    schedule1 = create(:work_schedule, service:)
+    schedule2 = create(:work_schedule, service:)
+    expect(service.work_schedules).to include(schedule1, schedule2)
+  end
 end
