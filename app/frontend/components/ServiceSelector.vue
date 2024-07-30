@@ -1,6 +1,6 @@
 <template>
   <v-select
-    v-model="selectedService"
+    v-model="internalSelectedService"
     :items="services"
     item-title="name"
     item-value="id"
@@ -22,7 +22,7 @@ export default {
   },
   data() {
     return {
-      selectedService: this.selectedService
+      internalSelectedService: this.selectedService
     };
   },
   watch: {

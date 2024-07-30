@@ -24,7 +24,7 @@ export default {
   },
   data() {
     return {
-      localEngineers: this.engineers,
+      internalEngineers: this.engineers,
       headers: [
         { text: 'Ingeniero', value: 'name' },
         { text: 'Horas Asignadas', value: 'assigned_hours' }
@@ -33,9 +33,9 @@ export default {
   },
   computed: {
     engineersWithUnassigned() {
-      const assignedHours = this.localEngineers.reduce((sum, engineer) => sum + (engineer.assigned_hours || 0), 0);
+      const assignedHours = this.internalEngineers.reduce((sum, engineer) => sum + (engineer.assigned_hours || 0), 0);
       const unassignedHours = this.totalHoursPerWeek - assignedHours;
-      const engineers = [...this.localEngineers.map(engineer => ({
+      const engineers = [...this.internalEngineers.map(engineer => ({
         ...engineer,
         assigned_hours: engineer.assigned_hours || 0
       }))];
@@ -45,7 +45,7 @@ export default {
   },
   watch: {
     engineers(newValue) {
-      this.localEngineers = newValue;
+      this.internalEngineers = newValue;
     }
   }
 };

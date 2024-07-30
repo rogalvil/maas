@@ -1,6 +1,6 @@
 <template>
   <v-select
-    v-model="selectedWeekInternal"
+    v-model="internalSelectedWeek"
     :items="weeks"
     item-title="label"
     item-value="value"
@@ -23,7 +23,7 @@ export default {
   },
   data() {
     return {
-      selectedWeekInternal: this.selectedWeek
+      internalSelectedWeek: this.selectedWeek
     };
   },
   watch: {
@@ -33,7 +33,7 @@ export default {
   },
   computed: {
     weekDetails() {
-      const week = this.weeks.find(w => w.value === this.selectedWeekInternal);
+      const week = this.weeks.find(w => w.value === this.internalSelectedWeek);
       return week ? `Del ${week.start_date} al ${week.end_date}` : '';
     }
   },
