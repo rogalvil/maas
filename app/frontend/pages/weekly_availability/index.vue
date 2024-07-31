@@ -28,7 +28,7 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <schedule-table :schedule="schedule"></schedule-table>
+        <schedule-table :schedule="schedule" :items-per-page="itemsPerPage"></schedule-table>
       </v-col>
     </v-row>
   </v-container>
@@ -56,7 +56,8 @@ export default {
     return {
       selectedService: this.services[0]?.id || null,
       selectedWeek: this.weeks[0]?.value || null,
-      schedule: this.generateExampleSchedule()
+      schedule: {},
+      itemsPerPage: 0
     };
   },
   computed: {
@@ -72,32 +73,56 @@ export default {
       this.selectedWeek = newWeek;
     },
     fetchSchedule() {
-      const exampleSchedule = this.generateExampleSchedule();
-      this.schedule = exampleSchedule;
+      this.updateSchedule();
     },
-    generateExampleSchedule() {
+    updateSchedule() {
+      const days = {
+        monday: [18, 24],
+        tuesday: [16, 22],
+        wednesday: [16, 24],
+        thursday: [18, 24],
+        friday: [18, 23],
+        saturday: [10, 24],
+        sunday: [12, 20]
+      };
+      const hoursRange = this.calculateHoursRange(days);
+      this.schedule = this.generateExampleSchedule(days, hoursRange);
+      this.itemsPerPage = hoursRange.max - hoursRange.min + 1;
+    },
+    generateExampleSchedule(days, hoursRange) {
       const schedule = {};
-      const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-      const hours = [
-        '10:00-11:00', '11:00-12:00', '12:00-13:00', '13:00-14:00', '14:00-15:00', '15:00-16:00',
-        '16:00-17:00', '17:00-18:00', '18:00-19:00', '19:00-20:00', '20:00-21:00', '21:00-22:00',
-        '22:00-23:00', '23:00-00:00'
-      ];
 
-      days.forEach(day => {
+      Object.keys(days).forEach(day => {
         schedule[day] = {};
-        hours.forEach(hour => {
-          schedule[day][hour] = { engineer: null };
-        });
+        console.log(hoursRange.min, hoursRange.max);
+        for (let hour = hoursRange.min; hour < hoursRange.max; hour++) {
+          if (hour >= days[day][0] && hour < days[day][1]) {
+            schedule[day][hour] = { engineer: null };
+          } else {
+            schedule[day][hour] = { engineer: '-' };
+          }
+        }
       });
 
-      schedule['Lunes']['10:00-11:00'] = { engineer: 'Ernesto' };
-      schedule['Lunes']['11:00-12:00'] = { engineer: 'Bárbara' };
-      schedule['Sábado']['14:00-15:00'] = { engineer: 'Benjamín' };
-      schedule['Sábado']['15:00-16:00'] = { engineer: '⚠' };
+      schedule['monday'][18] = { engineer: 'Ernesto' };
+      schedule['monday'][19] = { engineer: 'Bárbara' };
+      schedule['tuesday'][20] = { engineer: 'Ernesto' };
+      schedule['friday'][19] = { engineer: 'Benjamín' };
+      schedule['friday'][20] = { engineer: 'Bárbara' };
+      schedule['saturday'][14] = { engineer: 'Benjamín' };
 
       return schedule;
-    }
+    },
+    calculateHoursRange(days) {
+      return Object.values(days).reduce(
+        (range, [start, end]) => {
+          range.min = Math.min(range.min, start);
+          range.max = Math.max(range.max, end);
+          return range;
+        },
+        { min: 24, max: 0 }
+      );
+    },
   },
   mounted() {
     this.fetchSchedule();
