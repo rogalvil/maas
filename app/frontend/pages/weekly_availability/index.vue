@@ -60,6 +60,14 @@ export default {
       itemsPerPage: 0
     };
   },
+  // watch: {
+  //   selectedService(newService) {
+  //     this.fetchSchedule();
+  //   },
+  //   selectedWeek(newWeek) {
+  //     this.fetchSchedule();
+  //   }
+  // },
   computed: {
     totalHoursPerWeek() {
       return 7 * 24;
@@ -73,28 +81,26 @@ export default {
       this.selectedWeek = newWeek;
     },
     fetchSchedule() {
-      this.updateSchedule();
+      const selectedService = this.services.find(service => service.id === this.selectedService);
+      if (selectedService) {
+        const days = this.extractContractSchedule(selectedService.contract_schedules);
+        const hoursRange = this.calculateHoursRange(days);
+        this.schedule = this.generateSchedule(days, hoursRange);
+        this.itemsPerPage = hoursRange.max - hoursRange.min + 1;
+      }
     },
-    updateSchedule() {
-      const days = {
-        monday: [18, 24],
-        tuesday: [16, 22],
-        wednesday: [16, 24],
-        thursday: [18, 24],
-        friday: [18, 23],
-        saturday: [10, 24],
-        sunday: [12, 20]
-      };
-      const hoursRange = this.calculateHoursRange(days);
-      this.schedule = this.generateExampleSchedule(days, hoursRange);
-      this.itemsPerPage = hoursRange.max - hoursRange.min + 1;
+    extractContractSchedule(contractSchedules) {
+      const days = {};
+      contractSchedules.forEach(schedule => {
+        days[schedule.day] = [schedule.start_time, schedule.end_time];
+      });
+      return days;
     },
-    generateExampleSchedule(days, hoursRange) {
+    generateSchedule(days, hoursRange) {
       const schedule = {};
 
       Object.keys(days).forEach(day => {
         schedule[day] = {};
-        console.log(hoursRange.min, hoursRange.max);
         for (let hour = hoursRange.min; hour < hoursRange.max; hour++) {
           if (hour >= days[day][0] && hour < days[day][1]) {
             schedule[day][hour] = { engineer: null };
@@ -104,12 +110,12 @@ export default {
         }
       });
 
-      schedule['monday'][18] = { engineer: 'Ernesto' };
-      schedule['monday'][19] = { engineer: 'Bárbara' };
-      schedule['tuesday'][20] = { engineer: 'Ernesto' };
-      schedule['friday'][19] = { engineer: 'Benjamín' };
-      schedule['friday'][20] = { engineer: 'Bárbara' };
-      schedule['saturday'][14] = { engineer: 'Benjamín' };
+      // schedule['monday'][18] = { engineer: 'Ernesto' };
+      // schedule['monday'][19] = { engineer: 'Bárbara' };
+      // schedule['tuesday'][20] = { engineer: 'Ernesto' };
+      // schedule['friday'][19] = { engineer: 'Benjamín' };
+      // schedule['friday'][20] = { engineer: 'Bárbara' };
+      // schedule['saturday'][14] = { engineer: 'Benjamín' };
 
       return schedule;
     },

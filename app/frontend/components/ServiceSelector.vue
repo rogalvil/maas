@@ -4,7 +4,7 @@
     :items="services"
     item-title="name"
     item-value="id"
-    @change="onServiceChange"
+    @update:modelValue="onServiceChange"
     density="compact"
   ></v-select>
 </template>
@@ -26,13 +26,9 @@ export default {
       internalSelectedService: this.selectedService
     };
   },
-  watch: {
-    selectedService(newValue) {
-      this.selectedService = newValue;
-    }
-  },
   methods: {
     onServiceChange(event) {
+      this.internalSelectedService = event;
       this.$emit('update:selectedService', event);
       this.$emit('service-changed', event);
     }

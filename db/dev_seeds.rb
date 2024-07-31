@@ -43,8 +43,8 @@ end
       { day: 'wednesday', start_time: 16, end_time: 24 },
       { day: 'thursday', start_time: 18, end_time: 24 },
       { day: 'friday', start_time: 18, end_time: 23 },
-      { day: 'saturday', start_time: 10, end_time: 24 },
-      { day: 'sunday', start_time: 12, end_time: 20 }
+      { day: 'saturday', start_time: 14, end_time: 24 },
+      { day: 'sunday', start_time: 14, end_time: 20 }
     ]
   }
 ].each do |service_attributes|

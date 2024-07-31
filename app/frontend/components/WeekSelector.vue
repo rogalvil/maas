@@ -4,7 +4,7 @@
     :items="weeks"
     item-title="label"
     item-value="value"
-    @change="onWeekChange"
+    @update:modelValue="onWeekChange"
     density="compact"
   ></v-select>
   <div>{{ weekDetails }}</div>
@@ -26,11 +26,6 @@ export default {
     return {
       internalSelectedWeek: this.selectedWeek
     };
-  },
-  watch: {
-    selectedService(newValue) {
-      this.selectedServiceInternal = newValue;
-    }
   },
   computed: {
     weekDetails() {

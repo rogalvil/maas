@@ -1,8 +1,8 @@
 <weekly-availability
-  :services="<%= @services.to_json %>"
+  :services="<%= @services.as_json(include: :contract_schedules).to_json %>"
   :weeks="<%= @weeks.to_json %>"
   :engineers="<%= @engineers.to_json %>"
 ></weekly-availability>
-<% #= @services.to_json %>
+<% #= @services.as_json(include: :contract_schedules).to_json %>
 <% #= @weeks.to_json %>
 <% #= @engineers.to_json %>

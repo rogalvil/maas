@@ -9,7 +9,7 @@ class WeeklyAvailabilityController < ApplicationController
   private
 
   def services
-    @services = Service.all
+    @services = Service.includes(:contract_schedules).all
   end
 
   def engineers
