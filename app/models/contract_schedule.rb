@@ -7,6 +7,7 @@ class ContractSchedule < ApplicationRecord
   validates :day, presence: true, inclusion: {
     in: %w[monday tuesday wednesday thursday friday saturday sunday]
   }
+  validates :day, uniqueness: { scope: :service_id }
   validates :start_time, :end_time, presence: true, numericality: {
     only_integer: true,
     greater_than_or_equal_to: 0,

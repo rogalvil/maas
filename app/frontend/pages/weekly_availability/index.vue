@@ -50,7 +50,8 @@ export default {
   props: {
     services: Array,
     weeks: Array,
-    engineers: Array
+    engineers: Array,
+    workSchedules: Array
   },
   data() {
     return {
@@ -88,6 +89,9 @@ export default {
         const days = this.extractContractSchedule(selectedService.contract_schedules);
         const hoursRange = this.calculateHoursRange(days);
         this.schedule = this.generateSchedule(days, hoursRange);
+        console.log(this.schedule);
+        console.log(this.workSchedules);
+        this.assignEngineersToSchedule(this.workSchedules);
         this.itemsPerPage = hoursRange.max - hoursRange.min + 1;
       }
     },
@@ -105,9 +109,9 @@ export default {
         schedule[day] = {};
         for (let hour = hoursRange.min; hour < hoursRange.max; hour++) {
           if (hour >= days[day][0] && hour < days[day][1]) {
-            schedule[day][hour] = { engineer: null };
+            schedule[day][hour] = null;
           } else {
-            schedule[day][hour] = { engineer: '-' };
+            schedule[day][hour] = { engineer: '-', color: 'grey' };
           }
         }
       });
@@ -120,6 +124,18 @@ export default {
       // schedule['saturday'][14] = { engineer: 'Benjamín' };
 
       return schedule;
+    },
+    assignEngineersToSchedule(workSchedules) {
+      workSchedules.forEach(workSchedule => {
+        const day_of_week_name = workSchedule.day_of_week_name;
+        const hour = workSchedule.hour;
+        const engineer = workSchedule.engineer;
+        const color = workSchedule.color;
+        if (engineer) {
+          this.schedule[day_of_week_name][hour] = { engineer: engineer, color: color };
+        }
+      });
+      console.log(this.schedule);
     },
     calculateHoursRange(days) {
       return Object.values(days).reduce(

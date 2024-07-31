@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Set up engineers
 [
   { name: 'Alice Johnson' },
   { name: 'Bob Smith' },
@@ -10,54 +13,55 @@
   end
 end
 
-[
-  {
-    name: 'Monitoring Service A',
-    schedule: [
-      { day: 'monday', start_time: 8, end_time: 16 },
-      { day: 'tuesday', start_time: 9, end_time: 17 },
-      { day: 'wednesday', start_time: 10, end_time: 18 },
-      { day: 'thursday', start_time: 8, end_time: 16 },
-      { day: 'friday', start_time: 9, end_time: 17 },
-      { day: 'saturday', start_time: 10, end_time: 14 },
-      { day: 'sunday', start_time: 10, end_time: 14 }
-    ]
-  },
-  {
-    name: 'Monitoring Service B',
-    schedule: [
-      { day: 'monday', start_time: 12, end_time: 20 },
-      { day: 'tuesday', start_time: 12, end_time: 20 },
-      { day: 'wednesday', start_time: 14, end_time: 22 },
-      { day: 'thursday', start_time: 12, end_time: 20 },
-      { day: 'friday', start_time: 12, end_time: 20 },
-      { day: 'saturday', start_time: 10, end_time: 18 },
-      { day: 'sunday', start_time: 10, end_time: 18 }
-    ]
-  },
-  {
-    name: 'Monitoring Service C',
-    schedule: [
-      { day: 'monday', start_time: 18, end_time: 24 },
-      { day: 'tuesday', start_time: 16, end_time: 22 },
-      { day: 'wednesday', start_time: 16, end_time: 24 },
-      { day: 'thursday', start_time: 18, end_time: 24 },
-      { day: 'friday', start_time: 18, end_time: 23 },
-      { day: 'saturday', start_time: 14, end_time: 24 },
-      { day: 'sunday', start_time: 14, end_time: 20 }
-    ]
-  }
-].each do |service_attributes|
-  Service.create_with(
-    service_attributes.except(:schedule)
-  ).find_or_initialize_by(name: service_attributes[:name]).tap do |service|
-    service.update!(service_attributes.except(:schedule))
-    service_attributes[:schedule].each do |schedule_attributes|
-      ContractSchedule.create_with(
-        schedule_attributes
-      ).find_or_initialize_by(service:, day: schedule_attributes[:day]).tap do |schedule|
-        schedule.update!(schedule_attributes)
-      end
+# Set up services with their schedules
+week_data = {
+  year: 2024,
+  week: 31,
+  schedules: [
+    { service: 'Monitoring Service A', engineer: 'Alice Johnson', day_of_week: 1, hours: [8, 9, 10] },
+    { service: 'Monitoring Service A', engineer: 'Alice Johnson', day_of_week: 2, hours: [12, 13, 14, 15, 16] },
+    { service: 'Monitoring Service A', engineer: 'Alice Johnson', day_of_week: 3, hours: [12, 13, 14, 15, 16] },
+    { service: 'Monitoring Service A', engineer: 'Alice Johnson', day_of_week: 5, hours: [14, 15, 16] },
+    { service: 'Monitoring Service A', engineer: 'Alice Johnson', day_of_week: 7, hours: [10, 11, 12, 13] },
+    { service: 'Monitoring Service A', engineer: 'Bob Smith', day_of_week: 1, hours: [14, 15] },
+    { service: 'Monitoring Service A', engineer: 'Bob Smith', day_of_week: 2, hours: [9, 10] },
+    { service: 'Monitoring Service A', engineer: 'Bob Smith', day_of_week: 4, hours: [9, 10, 12, 15] },
+    { service: 'Monitoring Service A', engineer: 'Charlie Davis', day_of_week: 4, hours: [13, 14] },
+    { service: 'Monitoring Service A', engineer: 'Charlie Davis', day_of_week: 5, hours: [10, 11, 12] },
+    { service: 'Monitoring Service B', engineer: 'Charlie Davis', day_of_week: 5, hours: [12, 13] },
+    { service: 'Monitoring Service C', engineer: 'Charlie Davis', day_of_week: 3, hours: [16] },
+    { service: 'Monitoring Service C', engineer: 'Alice Johnson', day_of_week: 6, hours: [14, 15] }
+  ]
+}
+
+engineers = Engineer.all
+services = Service.all
+week = week_data[:week]
+year = week_data[:year]
+
+week_data[:schedules].each do |entry|
+  engineer = engineers.find_by(name: entry[:engineer])
+  service = services.find_by(name: entry[:service])
+  day_of_week = entry[:day_of_week]
+  work_date = Date.commercial(year, week, day_of_week)
+  day_name = work_date.strftime('%A').downcase
+  contract_schedule = service.contract_schedules.find_by(day: day_name)
+  next unless contract_schedule
+
+  entry[:hours].each do |hour|
+    next unless hour >= contract_schedule.start_time && hour < contract_schedule.end_time
+
+    ws = WorkSchedule.find_or_initialize_by(
+      service:,
+      engineer:,
+      year:,
+      week:,
+      day_of_week:,
+      hour:,
+      work_date:
+    ).tap do |work_schedule|
+      work_schedule.update!(assigned: true)
     end
+    p "Work schedule created: #{ws.inspect}"
   end
 end

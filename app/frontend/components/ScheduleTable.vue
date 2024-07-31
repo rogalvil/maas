@@ -10,7 +10,7 @@
       {{ value }}:00 - {{ value +1 }}:00
     </template>
     <template v-for="day in days" :key="day" v-slot:[`item.${day}`]="{ value }">
-      <v-chip :color="getEngineerColor(value)"> {{ value }} </v-chip>
+      <v-chip :color="value.color"> {{ value.engineer }} </v-chip>
     </template>
   </v-data-table>
 </template>
@@ -42,22 +42,24 @@ export default {
       return hours.map(hour => {
         const entry = { hour };
         this.days.forEach(day => {
-          entry[day] = this.schedule[day][hour]?.engineer || '⚠';
+          // entry[day] = this.schedule[day][hour]?.engineer || '⚠';
+          console.log(this.schedule[day][hour]);
+          entry[day] = this.schedule[day][hour] || { engineer: '⚠', color: 'red' };
         });
         return entry;
       });
     }
   },
   methods: {
-    getEngineerColor(engineer) {
-      const engineerColors = {
-        Ernesto: 'green',
-        Bárbara: 'purple',
-        Benjamín: 'blue',
-        '-': 'grey'
-      };
-      return engineerColors[engineer] || 'red';
-    }
+    // getEngineerColor(engineer) {
+    //   const engineerColors = {
+    //     Ernesto: 'green',
+    //     Bárbara: 'purple',
+    //     Benjamín: 'blue',
+    //     '-': 'grey'
+    //   };
+    //   return engineerColors[engineer] || 'red';
+    // }
   }
 };
 </script>
