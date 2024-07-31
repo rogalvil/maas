@@ -60,17 +60,19 @@ export default {
       itemsPerPage: 0
     };
   },
-  // watch: {
-  //   selectedService(newService) {
-  //     this.fetchSchedule();
-  //   },
-  //   selectedWeek(newWeek) {
-  //     this.fetchSchedule();
-  //   }
-  // },
   computed: {
     totalHoursPerWeek() {
-      return 7 * 24;
+      const selectedService = this.services.find(service => service.id === this.selectedService);
+      if (!selectedService) return 0;
+
+      const contractSchedules = selectedService.contract_schedules;
+      let totalHours = 0;
+
+      contractSchedules.forEach(schedule => {
+        totalHours += schedule.end_time - schedule.start_time;
+      });
+
+      return totalHours;
     }
   },
   methods: {
