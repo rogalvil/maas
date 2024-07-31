@@ -28,7 +28,7 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <!-- <schedule-table :schedule="schedule"></schedule-table> -->
+        <schedule-table :schedule="schedule"></schedule-table>
       </v-col>
     </v-row>
   </v-container>
@@ -38,14 +38,14 @@
 import ServiceSelector from '../../components/ServiceSelector.vue';
 import WeekSelector from '../../components/WeekSelector.vue';
 import EngineerHours from '../../components/EngineerHours.vue';
-// import ScheduleTable from '../components/ScheduleTable.vue';
+import ScheduleTable from '../../components/ScheduleTable.vue';
 
 export default {
   components: {
     ServiceSelector,
     WeekSelector,
     EngineerHours,
-//     ScheduleTable,
+    ScheduleTable,
   },
   props: {
     services: Array,
@@ -56,7 +56,7 @@ export default {
     return {
       selectedService: this.services[0]?.id || null,
       selectedWeek: this.weeks[0]?.value || null,
-      schedule: {}
+      schedule: this.generateExampleSchedule()
     };
   },
   computed: {
@@ -90,6 +90,11 @@ export default {
           schedule[day][hour] = { engineer: null };
         });
       });
+
+      schedule['Lunes']['10:00-11:00'] = { engineer: 'Ernesto' };
+      schedule['Lunes']['11:00-12:00'] = { engineer: 'Bárbara' };
+      schedule['Sábado']['14:00-15:00'] = { engineer: 'Benjamín' };
+      schedule['Sábado']['15:00-16:00'] = { engineer: '⚠' };
 
       return schedule;
     }

@@ -5,6 +5,7 @@
     item-title="label"
     item-value="value"
     @change="onWeekChange"
+    density="compact"
   ></v-select>
   <div>{{ weekDetails }}</div>
 </template>

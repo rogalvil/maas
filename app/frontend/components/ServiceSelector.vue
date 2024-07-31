@@ -5,6 +5,7 @@
     item-title="name"
     item-value="id"
     @change="onServiceChange"
+    density="compact"
   ></v-select>
 </template>
 

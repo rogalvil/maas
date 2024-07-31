@@ -2,7 +2,9 @@
   <v-data-table
     :headers="headers"
     :items="engineersWithUnassigned"
+    density="compact"
     hide-default-footer
+    hide-default-header
   >
     <template v-slot:[`item.assigned_hours`]="{ item }">
       <span>{{ item.assigned_hours }}</span>
@@ -52,7 +54,4 @@ export default {
 </script>
 
 <style scoped>
-.v-data-table >>> thead {
-  display: none;
-}
 </style>
