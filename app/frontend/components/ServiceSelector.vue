@@ -30,7 +30,6 @@ export default {
     onServiceChange(event) {
       this.internalSelectedService = event;
       this.$emit('update:selectedService', event);
-      this.$emit('service-changed', event);
     }
   }
 };

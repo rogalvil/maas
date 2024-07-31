@@ -30,7 +30,8 @@ week_data = {
     { service: 'Monitoring Service A', engineer: 'Charlie Davis', day_of_week: 5, hours: [10, 11, 12] },
     { service: 'Monitoring Service B', engineer: 'Charlie Davis', day_of_week: 5, hours: [12, 13] },
     { service: 'Monitoring Service C', engineer: 'Charlie Davis', day_of_week: 3, hours: [16] },
-    { service: 'Monitoring Service C', engineer: 'Alice Johnson', day_of_week: 6, hours: [14, 15] }
+    { service: 'Monitoring Service C', engineer: 'Alice Johnson', day_of_week: 6, hours: [14, 15] },
+    { service: 'Monitoring Service C', engineer: 'Bob Smith', day_of_week: 1, hours: [19, 21, 22] }
   ]
 }
 

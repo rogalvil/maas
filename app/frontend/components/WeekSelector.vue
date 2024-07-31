@@ -36,7 +36,6 @@ export default {
   methods: {
     onWeekChange(event) {
       this.$emit('update:selectedWeek', event);
-      this.$emit('week-changed', event);
     }
   }
 };

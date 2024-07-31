@@ -6,7 +6,6 @@
           :services="services"
           :selected-service="selectedService"
           @update:selectedService="updateSelectedService"
-          @service-changed="fetchSchedule"
         ></service-selector>
       </v-col>
       <v-col cols="12" sm="6">
@@ -14,7 +13,6 @@
           :weeks="weeks"
           :selected-week="selectedWeek"
           @update:selectedWeek="updateSelectedWeek"
-          @week-changed="fetchSchedule"
         ></week-selector>
       </v-col>
     </v-row>
@@ -48,15 +46,28 @@ export default {
     ScheduleTable,
   },
   props: {
-    services: Array,
-    weeks: Array,
-    engineers: Array,
-    workSchedules: Array
+    services: {
+      type: Array,
+      required: true
+    },
+    weeks: {
+      type: Array,
+      required: true
+    },
+    engineers: {
+      type: Array,
+      required: true
+    },
+    workSchedules: {
+      type: Array,
+      required: true
+    }
   },
   data() {
     return {
-      selectedService: this.services[0]?.id || null,
-      selectedWeek: this.weeks[0]?.value || null,
+      selectedService: parseInt(new URLSearchParams(window.location.search).get('service_id')) || this.services[0]?.id || null,
+      selectedWeek: parseInt(new URLSearchParams(window.location.search).get('week')) || this.weeks[0]?.value || null,
+      selectedYear: parseInt(new URLSearchParams(window.location.search).get('year')) || this.weeks[0]?.year || null,
       schedule: {},
       itemsPerPage: 0
     };
@@ -76,9 +87,12 @@ export default {
   methods: {
     updateSelectedService(newService) {
       this.selectedService = newService;
+      this.redirectToUpdatedParams();
     },
     updateSelectedWeek(newWeek) {
       this.selectedWeek = newWeek;
+      this.selectedYear = this.weeks.find(w => w.value === newWeek).year;
+      this.redirectToUpdatedParams();
     },
     fetchSchedule() {
       const selectedService = this.services.find(service => service.id === this.selectedService);
@@ -132,6 +146,13 @@ export default {
         { min: 24, max: 0 }
       );
     },
+    redirectToUpdatedParams() {
+      const url = new URL(window.location.href);
+      url.searchParams.set('service_id', this.selectedService);
+      url.searchParams.set('week', this.selectedWeek);
+      url.searchParams.set('year', this.selectedYear);
+      window.location.href = url.toString();
+    }
   },
   mounted() {
     this.fetchSchedule();

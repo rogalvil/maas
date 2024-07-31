@@ -11,7 +11,8 @@ class WeeklyAvailabilityController < ApplicationController
 
   def defaults
     @selected_service_id = params[:service_id] || Service.first&.id
-    @selected_week = params[:week] || Date.today.cweek
+    @selected_week = (params[:week] || Date.today.cweek).to_i
+    @selected_year = (params[:year] || Date.today.year).to_i
   end
 
   def services
@@ -23,9 +24,14 @@ class WeeklyAvailabilityController < ApplicationController
   end
 
   def work_schedules
+    p @selected_year
+    p @selected_week
+    start_date = Date.commercial(@selected_year, @selected_week, 1)
+    end_date = Date.commercial(@selected_year, @selected_week, 7)
+
     @work_schedules = WorkSchedule.where(
       service_id: @selected_service_id,
-      week: @selected_week
+      work_date: start_date..end_date
     ).includes(:engineer).map do |schedule|
       {
         id: schedule.id,
@@ -48,13 +54,14 @@ class WeeklyAvailabilityController < ApplicationController
 
   def weeks
     current_date = Date.today
-    @weeks = (0..5).map { |i| week_info(current_date + (i * 7)) }
+    @weeks = (0..160).map { |i| week_info(current_date + (i * 7)) }
   end
 
   def week_info(date)
     {
       label: "Semana #{date.cweek} del #{date.year}",
       value: date.cweek,
+      year: date.year,
       start_date: date.beginning_of_week.strftime('%d/%m/%Y'),
       end_date: date.end_of_week.strftime('%d/%m/%Y')
     }
