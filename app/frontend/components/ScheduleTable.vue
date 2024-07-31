@@ -42,8 +42,6 @@ export default {
       return hours.map(hour => {
         const entry = { hour };
         this.days.forEach(day => {
-          // entry[day] = this.schedule[day][hour]?.engineer || '⚠';
-          console.log(this.schedule[day][hour]);
           entry[day] = this.schedule[day][hour] || { engineer: '⚠', color: 'red' };
         });
         return entry;
@@ -51,15 +49,6 @@ export default {
     }
   },
   methods: {
-    // getEngineerColor(engineer) {
-    //   const engineerColors = {
-    //     Ernesto: 'green',
-    //     Bárbara: 'purple',
-    //     Benjamín: 'blue',
-    //     '-': 'grey'
-    //   };
-    //   return engineerColors[engineer] || 'red';
-    // }
   }
 };
 </script>

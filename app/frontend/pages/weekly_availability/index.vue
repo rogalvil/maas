@@ -65,14 +65,11 @@ export default {
     totalHoursPerWeek() {
       const selectedService = this.services.find(service => service.id === this.selectedService);
       if (!selectedService) return 0;
-
       const contractSchedules = selectedService.contract_schedules;
       let totalHours = 0;
-
       contractSchedules.forEach(schedule => {
         totalHours += schedule.end_time - schedule.start_time;
       });
-
       return totalHours;
     }
   },
@@ -89,8 +86,6 @@ export default {
         const days = this.extractContractSchedule(selectedService.contract_schedules);
         const hoursRange = this.calculateHoursRange(days);
         this.schedule = this.generateSchedule(days, hoursRange);
-        console.log(this.schedule);
-        console.log(this.workSchedules);
         this.assignEngineersToSchedule(this.workSchedules);
         this.itemsPerPage = hoursRange.max - hoursRange.min + 1;
       }
@@ -104,7 +99,6 @@ export default {
     },
     generateSchedule(days, hoursRange) {
       const schedule = {};
-
       Object.keys(days).forEach(day => {
         schedule[day] = {};
         for (let hour = hoursRange.min; hour < hoursRange.max; hour++) {
@@ -115,14 +109,6 @@ export default {
           }
         }
       });
-
-      // schedule['monday'][18] = { engineer: 'Ernesto' };
-      // schedule['monday'][19] = { engineer: 'Bárbara' };
-      // schedule['tuesday'][20] = { engineer: 'Ernesto' };
-      // schedule['friday'][19] = { engineer: 'Benjamín' };
-      // schedule['friday'][20] = { engineer: 'Bárbara' };
-      // schedule['saturday'][14] = { engineer: 'Benjamín' };
-
       return schedule;
     },
     assignEngineersToSchedule(workSchedules) {
@@ -135,7 +121,6 @@ export default {
           this.schedule[day_of_week_name][hour] = { engineer: engineer, color: color };
         }
       });
-      console.log(this.schedule);
     },
     calculateHoursRange(days) {
       return Object.values(days).reduce(

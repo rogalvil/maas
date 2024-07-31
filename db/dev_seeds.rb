@@ -51,7 +51,7 @@ week_data[:schedules].each do |entry|
   entry[:hours].each do |hour|
     next unless hour >= contract_schedule.start_time && hour < contract_schedule.end_time
 
-    ws = WorkSchedule.find_or_initialize_by(
+    WorkSchedule.find_or_initialize_by(
       service:,
       engineer:,
       year:,
@@ -62,6 +62,5 @@ week_data[:schedules].each do |entry|
     ).tap do |work_schedule|
       work_schedule.update!(assigned: true)
     end
-    p "Work schedule created: #{ws.inspect}"
   end
 end
