@@ -19,7 +19,7 @@
     <v-row>
       <v-col cols="12">
         <engineer-hours
-          :engineers="engineers"
+          :engineers="engineersWithHours"
           :total-hours-per-week="totalHoursPerWeek"
         ></engineer-hours>
       </v-col>
@@ -82,6 +82,16 @@ export default {
         totalHours += schedule.end_time - schedule.start_time;
       });
       return totalHours;
+    },
+    engineersWithHours() {
+      const engineersWithHours = this.engineers.map(engineer => {
+        const hours = this.workSchedules.filter(schedule => schedule.engineer === engineer.name).length;
+        return {
+          ...engineer,
+          hours: hours
+        };
+      });
+      return engineersWithHours;
     }
   },
   methods: {
