@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-# Confirmed Shifts Controller
-class ConfirmedShiftsController < ApplicationController
-  before_action :defaults, only: %i[index]
-  before_action :services, :engineers, :weeks, :work_schedules, only: %i[index]
+# Schedules Controller
+class SchedulesController < ApplicationController
+  before_action :defaults, only: %i[confirmed_shifts]
+  before_action :services, :engineers, :weeks, :work_schedules, only: %i[confirmed_shifts]
 
-  def index; end
+  def confirmed_shifts; end
 
   private
 
