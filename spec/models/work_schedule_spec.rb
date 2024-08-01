@@ -14,10 +14,10 @@ RSpec.describe WorkSchedule, type: :model do
     expect(work_schedule.errors[:week]).to include("can't be blank")
   end
 
-  it 'is invalid without a day' do
-    work_schedule = build(:work_schedule, day: nil)
+  it 'is invalid without a day of week' do
+    work_schedule = build(:work_schedule, day_of_week: nil)
     work_schedule.valid?
-    expect(work_schedule.errors[:day]).to include("can't be blank")
+    expect(work_schedule.errors[:day_of_week]).to include("can't be blank")
   end
 
   it 'is invalid without an hour' do

@@ -7,9 +7,6 @@
     hide-default-footer
     hide-default-header
   >
-    <!-- <template v-slot:[`item.assigned_hours`]="{ item }">
-      <span>{{ item.assigned_hours }}</span>
-    </template> -->
     <template v-slot:[`item.assigned_hours`]="{ item }">
       <span>{{ item.assigned_hours }}</span>
     </template>
