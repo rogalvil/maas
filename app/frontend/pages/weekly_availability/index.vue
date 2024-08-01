@@ -66,8 +66,8 @@ export default {
   data() {
     return {
       selectedService: parseInt(new URLSearchParams(window.location.search).get('service_id')) || this.services[0]?.id || null,
-      selectedWeek: parseInt(new URLSearchParams(window.location.search).get('week')) || this.weeks[0]?.value || null,
-      selectedYear: parseInt(new URLSearchParams(window.location.search).get('year')) || this.weeks[0]?.year || null,
+      selectedWeek: parseInt(new URLSearchParams(window.location.search).get('week')) || this.getCurrentWeek().value || null,
+      selectedYear: parseInt(new URLSearchParams(window.location.search).get('year')) || this.getCurrentWeek().year || null,
       schedule: {},
       itemsPerPage: 0
     };
@@ -95,6 +95,17 @@ export default {
     }
   },
   methods: {
+    getCurrentWeek() {
+      const currentDate = new Date();
+      console.log(currentDate);
+      console.log(this.weeks);
+      const currentWeek = this.weeks.find(week => {
+        const startDate = new Date(week.start_date.split('/').reverse().join('-'));
+        const endDate = new Date(week.end_date.split('/').reverse().join('-'));
+        return currentDate >= startDate && currentDate <= endDate;
+      });
+      return currentWeek || this.weeks[0];
+    },
     updateSelectedService(newService) {
       this.selectedService = newService;
       this.redirectToUpdatedParams();
