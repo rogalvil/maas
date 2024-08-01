@@ -66,7 +66,7 @@ end
   end
 end
 
-# Set uo work schedules
+# Set up work schedules
 week_data = [
   {
     year: 2024,
@@ -163,17 +163,12 @@ week_data = [
     ]
   }
 ]
-
-engineers = Engineer.all
-services = Service.all
-
 week_data.each do |week|
   week_number = week[:week]
   year = week[:year]
-
   week[:schedules].each do |entry|
-    engineer = engineers.find_by(name: entry[:engineer])
-    service = services.find_by(name: entry[:service])
+    engineer = Engineer.find_by(name: entry[:engineer])
+    service = Service.find_by(name: entry[:service])
     day_of_week = entry[:day_of_week]
     work_date = Date.commercial(year, week_number, day_of_week)
     day_name = work_date.strftime('%A').downcase
@@ -194,6 +189,57 @@ week_data.each do |week|
       ).tap do |work_schedule|
         work_schedule.update!(assigned: true)
       end
+    end
+  end
+end
+
+# Set up engineer availabilities
+week_data = [
+  {
+    year: 2024,
+    week: 32,
+    schedules: [
+      # Monitoring Service A
+      { service: 'Monitoring Service A', engineer: 'Alice Johnson', day_of_week: 1, hours: [8, 9, 10, 11, 12] }, # Monday
+      { service: 'Monitoring Service A', engineer: 'Bob Smith', day_of_week: 1, hours: [8, 9, 10, 11, 12, 13, 14, 15] }, # Monday
+      { service: 'Monitoring Service A', engineer: 'Charlie Davis', day_of_week: 2, hours: [9, 10, 11, 12] }, # Tuesday
+      { service: 'Monitoring Service A', engineer: 'Alice Johnson', day_of_week: 2, hours: [9, 10, 11, 12, 13, 14, 15] }, # Tuesday
+      { service: 'Monitoring Service A', engineer: 'Bob Smith', day_of_week: 3, hours: [10, 11, 12, 13, 14, 15] }, # Wednesday
+      { service: 'Monitoring Service A', engineer: 'Charlie Davis', day_of_week: 3, hours: [13, 14, 15, 16] }, # Wednesday
+      { service: 'Monitoring Service A', engineer: 'Alice Johnson', day_of_week: 4, hours: [8, 9, 10, 11, 12] }, # Thursday
+      { service: 'Monitoring Service A', engineer: 'Bob Smith', day_of_week: 4, hours: [10, 11, 12, 13, 14, 15] }, # Thursday
+      { service: 'Monitoring Service A', engineer: 'Charlie Davis', day_of_week: 5, hours: [9, 10, 11, 12] }, # Friday
+      { service: 'Monitoring Service A', engineer: 'Alice Johnson', day_of_week: 5, hours: [11, 12, 13, 14, 15] }, # Friday
+      { service: 'Monitoring Service A', engineer: 'Bob Smith', day_of_week: 6, hours: [10, 11, 12, 13] }, # Saturday
+      { service: 'Monitoring Service A', engineer: 'Charlie Davis', day_of_week: 6, hours: [10, 13] }, # Saturday
+      { service: 'Monitoring Service A', engineer: 'Alice Johnson', day_of_week: 7, hours: [10, 11] }, # Sunday
+      { service: 'Monitoring Service A', engineer: 'Bob Smith', day_of_week: 7, hours: [10, 12] } # Sunday
+    ]
+  }
+]
+week_data.each do |week|
+  week_number = week[:week]
+  year = week[:year]
+  week[:schedules].each do |entry|
+    engineer = Engineer.find_by(name: entry[:engineer])
+    service = Service.find_by(name: entry[:service])
+    day_of_week = entry[:day_of_week]
+    date = Date.commercial(year, week_number, day_of_week)
+    day_name = date.strftime('%A').downcase
+    contract_schedule = service.contract_schedules.find_by(day: day_name)
+    next unless contract_schedule
+
+    entry[:hours].each do |hour|
+      next unless hour >= contract_schedule.start_time && hour < contract_schedule.end_time
+
+      EngineerAvailability.find_or_create_by(
+        service:,
+        engineer:,
+        year:,
+        week: week_number,
+        day_of_week:,
+        hour:
+      )
     end
   end
 end

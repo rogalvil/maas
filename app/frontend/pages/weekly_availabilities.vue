@@ -19,6 +19,7 @@
     <v-row>
       <v-col cols="12">
         <weekly-schedule
+          :engineer-availabilities="engineerAvailabilities"
           :contract-schedule="contractSchedule"
           :engineers="engineers"
           :selected-week="selectedWeek"
@@ -31,7 +32,6 @@
 </template>
 
 <script>
-import { mdiContactlessPayment } from '@mdi/js';
 import ServiceSelector from '../components/ServiceSelector.vue';
 import WeekSelector from '../components/WeekSelector.vue';
 import WeeklySchedule from '../components/WeeklySchedule.vue';
@@ -62,6 +62,10 @@ export default {
     contractSchedule: {
       type: Array,
       required: true
+    },
+    engineerAvailabilities: {
+      type: Array,
+      required: true
     }
   },
   data() {
@@ -72,16 +76,6 @@ export default {
     };
   },
   computed: {
-    // totalHoursPerWeek() {
-    //   const selectedService = this.services.find(service => service.id === this.selectedService);
-    //   if (!selectedService) return 0;
-    //   const contractSchedules = selectedService.contract_schedules;
-    //   let totalHours = 0;
-    //   contractSchedules.forEach(schedule => {
-    //     totalHours += schedule.end_time - schedule.start_time;
-    //   });
-    //   return totalHours;
-    // }
   },
   methods: {
     getCurrentWeek() {
@@ -102,58 +96,6 @@ export default {
       this.selectedYear = this.weeks.find(w => w.value === newWeek).year;
       this.redirectToUpdatedParams();
     },
-    // fetchSchedule() {
-    //   const selectedService = this.services.find(service => service.id === this.selectedService);
-    //   if (selectedService) {
-    //     const days = this.extractContractSchedule(selectedService.contract_schedules);
-    //     // const hoursRange = this.calculateHoursRange(days);
-    //     // this.schedule = this.generateSchedule(days, hoursRange);
-    //     // this.assignEngineersToSchedule(this.workSchedules);
-    //     // this.itemsPerPage = hoursRange.max - hoursRange.min + 1;
-    //   }
-    // },
-    // extractContractSchedule(contractSchedules) {
-    //   const days = {};
-    //   contractSchedules.forEach(schedule => {
-    //     days[schedule.day] = [schedule.start_time, schedule.end_time];
-    //   });
-    //   return days;
-    // },
-    // generateSchedule(days, hoursRange) {
-    //   const schedule = {};
-    //   Object.keys(days).forEach(day => {
-    //     schedule[day] = {};
-    //     for (let hour = hoursRange.min; hour < hoursRange.max; hour++) {
-    //       if (hour >= days[day][0] && hour < days[day][1]) {
-    //         schedule[day][hour] = null;
-    //       } else {
-    //         schedule[day][hour] = { engineer: '-', color: 'grey' };
-    //       }
-    //     }
-    //   });
-    //   return schedule;
-    // },
-    // assignEngineersToSchedule(workSchedules) {
-    //   workSchedules.forEach(workSchedule => {
-    //     const day_of_week_name = workSchedule.day_of_week_name;
-    //     const hour = workSchedule.hour;
-    //     const engineer = workSchedule.engineer;
-    //     const color = workSchedule.color;
-    //     if (engineer) {
-    //       this.schedule[day_of_week_name][hour] = { engineer: engineer, color: color };
-    //     }
-    //   });
-    // },
-    // calculateHoursRange(days) {
-    //   return Object.values(days).reduce(
-    //     (range, [start, end]) => {
-    //       range.min = Math.min(range.min, start);
-    //       range.max = Math.max(range.max, end);
-    //       return range;
-    //     },
-    //     { min: 24, max: 0 }
-    //   );
-    // },
     redirectToUpdatedParams() {
       const url = new URL(window.location.href);
       url.searchParams.set('service_id', this.selectedService);
@@ -163,7 +105,6 @@ export default {
     }
   },
   mounted() {
-    // this.fetchSchedule();
   }
 };
 </script>

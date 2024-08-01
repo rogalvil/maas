@@ -31,7 +31,11 @@
                 </v-chip>
               </template>
               <template v-for="engineer in engineers" :key="engineer.name" v-slot:[`item.${engineer.name}`]="{ item }">
-                <v-checkbox-btn v-model="item[engineer.name]" @change="updateAssignment(day, item.hour, engineer.name)" density="compact"></v-checkbox-btn>
+                <v-checkbox-btn
+                  :model-value="isAvailable(day, item.hour, engineer.name)"
+                  @change="updateAssignment(day, item.hour, engineer.name)"
+                  density="compact"
+                ></v-checkbox-btn>
               </template>
             </v-data-table>
           </v-col>
@@ -67,7 +71,11 @@
                 </v-chip>
               </template>
               <template v-for="engineer in engineers" :key="engineer.name" v-slot:[`item.${engineer.name}`]="{ item }">
-                <v-checkbox-btn v-model="item[engineer.name]" @change="updateAssignment(day, item.hour, engineer.name)" density="compact"></v-checkbox-btn>
+                <v-checkbox-btn
+                  :model-value="isAvailable(day, item.hour, engineer.name)"
+                  @change="updateAssignment(day, item.hour, engineer.name)"
+                  density="compact"
+                ></v-checkbox-btn>
               </template>
             </v-data-table>
           </v-col>
@@ -80,6 +88,10 @@
 <script>
 export default {
   props: {
+    engineerAvailabilities: {
+      type: Array,
+      required: true
+    },
     contractSchedule: {
       type: Array,
       required: true
@@ -98,6 +110,7 @@ export default {
     }
   },
   data() {
+    console.log(this.engineerAvailabilities);
     return {
     };
   },
@@ -118,6 +131,13 @@ export default {
   methods: {
     updateAssignment(day, hour, engineer) {
       this.$emit('update-assignment', { day, hour, engineer });
+    },
+    isAvailable(day, hour, engineerName) {
+      return this.engineerAvailabilities.some(avail =>
+        avail.day_of_week_name === day &&
+        avail.hour === hour &&
+        avail.engineer === engineerName
+      );
     },
     capitalize(str) {
       return str.charAt(0).toUpperCase() + str.slice(1);
