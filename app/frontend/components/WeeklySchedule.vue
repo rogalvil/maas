@@ -12,6 +12,20 @@
               density="compact"
               hide-default-footer
             >
+              <template v-slot:headers="{ columns }">
+                <tr>
+                  <template v-for="column in columns" :key="column.key">
+                    <th v-if="column.key === 'hour'">
+                      {{ column.title }}
+                    </th>
+                    <th v-else>
+                      <v-chip :color="engineerColor(column.key)">
+                        {{ column.title }}
+                      </v-chip>
+                    </th>
+                  </template>
+                </tr>
+              </template>
               <template v-slot:item.hour="{ item }">
                 <v-chip :color="item.assigned ? 'green' : 'red'">
                   {{ item.hour }}:00 - {{ item.hour + 1 }}:00
@@ -35,30 +49,20 @@
               density="compact"
               hide-default-footer
             >
-              <template v-slot:[`item.hour`]="{ item }">
-                <v-chip :color="item.assigned ? 'green' : 'red'">
-                  {{ item.hour }}:00 - {{ item.hour + 1 }}:00
-                </v-chip>
+              <template v-slot:headers="{ columns }">
+                <tr>
+                  <template v-for="column in columns" :key="column.key">
+                    <th v-if="column.key === 'hour'">
+                      {{ column.title }}
+                    </th>
+                    <th v-else>
+                      <v-chip :color="engineerColor(column.key)">
+                        {{ column.title }}
+                      </v-chip>
+                    </th>
+                  </template>
+                </tr>
               </template>
-              <template v-for="engineer in engineers" :key="engineer.name" v-slot:[`item.${engineer.name}`]="{ item }">
-                <v-checkbox-btn v-model="item[engineer.name]" @change="updateAssignment(day, item.hour, engineer.name)" density="compact"></v-checkbox-btn>
-              </template>
-            </v-data-table>
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12">
-        <v-row v-for="day in singleColumnDay" :key="day">
-          <v-col cols="12">
-            <v-data-table
-              :headers="headers"
-              :items="formattedSchedule(day)"
-              :items-per-page="24"
-              density="compact"
-              hide-default-footer
-            >
               <template v-slot:[`item.hour`]="{ item }">
                 <v-chip :color="item.assigned ? 'green' : 'red'">
                   {{ item.hour }}:00 - {{ item.hour + 1 }}:00
@@ -97,7 +101,6 @@ export default {
   },
   data() {
     return {
-      // days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
     };
   },
   computed: {
@@ -144,6 +147,11 @@ export default {
         }
       }
       return formatted;
+    },
+    engineerColor(engineerName) {
+      console.log(engineerName);
+      const engineer = this.engineers.find(engineer => engineer.name === engineerName);
+      return engineer ? engineer.color : null;
     }
   }
 };
