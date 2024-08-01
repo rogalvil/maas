@@ -3,8 +3,8 @@
 # Schedules Controller
 class SchedulesController < ApplicationController
   before_action :defaults, only: %i[confirmed_shifts weekly_availabilities]
-  before_action :services, :weeks, only: %i[confirmed_shifts weekly_availabilities]
-  before_action :engineers, :work_schedules, only: %i[confirmed_shifts]
+  before_action :services, :weeks, :engineers, :contract_schedule, only: %i[confirmed_shifts weekly_availabilities]
+  before_action :work_schedules, only: %i[confirmed_shifts]
 
   def confirmed_shifts; end
 
@@ -31,6 +31,10 @@ class SchedulesController < ApplicationController
       service_id: @selected_service_id,
       work_date: selected_date_range
     ).includes(:engineer).map { |schedule| format_schedule(schedule) }
+  end
+
+  def contract_schedule
+    @contract_schedule = ContractSchedule.where(service_id: @selected_service_id)
   end
 
   def selected_date_range

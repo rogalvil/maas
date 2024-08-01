@@ -9,7 +9,6 @@ import App from "~/app";
 
 const ConfirmedShifts = defineAsyncComponent(() => import("~/pages/confirmed_shifts"));
 const WeeklyAvailabilities = defineAsyncComponent(() => import("~/pages/weekly_availabilities"));
-console.log(WeeklyAvailabilities);
 
 document.addEventListener("turbo:load", () => {
   const app = createApp({});

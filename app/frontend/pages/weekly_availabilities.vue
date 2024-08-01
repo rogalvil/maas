@@ -18,19 +18,29 @@
     </v-row>
     <v-row>
       <v-col cols="12">
+        <weekly-schedule
+          :contract-schedule="contactSchedule"
+          :engineers="engineers"
+          :selected-week="selectedWeek"
+          :selected-year="selectedYear"
+          @update-assignment="updateAssignment"
+        ></weekly-schedule>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
+import { mdiContactlessPayment } from '@mdi/js';
 import ServiceSelector from '../components/ServiceSelector.vue';
 import WeekSelector from '../components/WeekSelector.vue';
+import WeeklySchedule from '../components/WeeklySchedule.vue';
 
 export default {
   components: {
     ServiceSelector,
     WeekSelector,
+    WeeklySchedule
   },
   props: {
     services: {
@@ -55,20 +65,19 @@ export default {
       selectedService: parseInt(new URLSearchParams(window.location.search).get('service_id')) || this.services[0]?.id || null,
       selectedWeek: parseInt(new URLSearchParams(window.location.search).get('week')) || this.getCurrentWeek().value || null,
       selectedYear: parseInt(new URLSearchParams(window.location.search).get('year')) || this.getCurrentWeek().year || null,
-      schedule: {},
     };
   },
   computed: {
-    totalHoursPerWeek() {
-      const selectedService = this.services.find(service => service.id === this.selectedService);
-      if (!selectedService) return 0;
-      const contractSchedules = selectedService.contract_schedules;
-      let totalHours = 0;
-      contractSchedules.forEach(schedule => {
-        totalHours += schedule.end_time - schedule.start_time;
-      });
-      return totalHours;
-    }
+    // totalHoursPerWeek() {
+    //   const selectedService = this.services.find(service => service.id === this.selectedService);
+    //   if (!selectedService) return 0;
+    //   const contractSchedules = selectedService.contract_schedules;
+    //   let totalHours = 0;
+    //   contractSchedules.forEach(schedule => {
+    //     totalHours += schedule.end_time - schedule.start_time;
+    //   });
+    //   return totalHours;
+    // }
   },
   methods: {
     getCurrentWeek() {
@@ -99,13 +108,13 @@ export default {
     //     // this.itemsPerPage = hoursRange.max - hoursRange.min + 1;
     //   }
     // },
-    extractContractSchedule(contractSchedules) {
-      const days = {};
-      contractSchedules.forEach(schedule => {
-        days[schedule.day] = [schedule.start_time, schedule.end_time];
-      });
-      return days;
-    },
+    // extractContractSchedule(contractSchedules) {
+    //   const days = {};
+    //   contractSchedules.forEach(schedule => {
+    //     days[schedule.day] = [schedule.start_time, schedule.end_time];
+    //   });
+    //   return days;
+    // },
     // generateSchedule(days, hoursRange) {
     //   const schedule = {};
     //   Object.keys(days).forEach(day => {
