@@ -5,6 +5,7 @@ class Engineer < ApplicationRecord
   before_create :assign_unique_color
 
   has_many :work_schedules, dependent: :destroy, inverse_of: :engineer
+  has_many :engineer_availabilities, dependent: :destroy, inverse_of: :engineer
 
   validates :name, presence: true
 
