@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Weekly Availability Controller
-class WeeklyAvailabilityController < ApplicationController
+# Confirmed Shifts Controller
+class ConfirmedShiftsController < ApplicationController
   before_action :defaults, only: %i[index]
   before_action :services, :engineers, :weeks, :work_schedules, only: %i[index]
 
