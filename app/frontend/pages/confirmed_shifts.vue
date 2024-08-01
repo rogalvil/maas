@@ -1,19 +1,24 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12" sm="6">
+      <v-col cols="12" sm="4">
         <service-selector
           :services="services"
           :selected-service="selectedService"
           @update:selectedService="updateSelectedService"
         ></service-selector>
       </v-col>
-      <v-col cols="12" sm="6">
+      <v-col cols="12" sm="4">
         <week-selector
           :weeks="weeks"
           :selected-week="selectedWeek"
           @update:selectedWeek="updateSelectedWeek"
         ></week-selector>
+      </v-col>
+      <v-col cols="12" sm="4">
+        <v-btn text href="/weekly_availabilities" size="small">
+          Editar disponibilidad
+        </v-btn>
       </v-col>
     </v-row>
     <v-row>
@@ -33,10 +38,10 @@
 </template>
 
 <script>
-import ServiceSelector from '../../components/ServiceSelector.vue';
-import WeekSelector from '../../components/WeekSelector.vue';
-import EngineerHours from '../../components/EngineerHours.vue';
-import ScheduleTable from '../../components/ScheduleTable.vue';
+import ServiceSelector from '../components/ServiceSelector.vue';
+import WeekSelector from '../components/WeekSelector.vue';
+import EngineerHours from '../components/EngineerHours.vue';
+import ScheduleTable from '../components/ScheduleTable.vue';
 
 export default {
   components: {
@@ -97,8 +102,6 @@ export default {
   methods: {
     getCurrentWeek() {
       const currentDate = new Date();
-      console.log(currentDate);
-      console.log(this.weeks);
       const currentWeek = this.weeks.find(week => {
         const startDate = new Date(week.start_date.split('/').reverse().join('-'));
         const endDate = new Date(week.end_date.split('/').reverse().join('-'));

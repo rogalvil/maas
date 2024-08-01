@@ -2,10 +2,13 @@
 
 # Schedules Controller
 class SchedulesController < ApplicationController
-  before_action :defaults, only: %i[confirmed_shifts]
-  before_action :services, :engineers, :weeks, :work_schedules, only: %i[confirmed_shifts]
+  before_action :defaults, only: %i[confirmed_shifts weekly_availabilities]
+  before_action :services, :weeks, only: %i[confirmed_shifts weekly_availabilities]
+  before_action :engineers, :work_schedules, only: %i[confirmed_shifts]
 
   def confirmed_shifts; end
+
+  def weekly_availabilities; end
 
   private
 
