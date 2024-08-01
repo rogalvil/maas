@@ -66,10 +66,6 @@ class WorkScheduleAssignment
     hours.reject! { |hour| assigned_hours.include?(hour) }
   end
 
-  # def available_engineers_for(day, hour)
-  #   @engineer_availabilities.select { |availability| availability.day_of_week == day_number(day) && availability.hour == hour }
-  # end
-
   def available_engineers_for_day(day)
     @engineer_availabilities.select { |availability| availability.day_of_week == day_number(day) }.map(&:engineer).uniq
   end
@@ -86,17 +82,6 @@ class WorkScheduleAssignment
     engineer_hours.min_by { |_engineer, h| h }&.first
   end
 
-  # def count_assigned_hours(engineer, day, hours)
-  #   assigned_hours = @assign_work_schedules.count { |schedule| schedule[:engineer_id] == engineer.id }
-  #   available_hours = hours.count { |hour| available?(engineer, day, hour) }
-  #   assigned_hours + (24 - available_hours)
-  # end
-  # def count_assigned_hours(engineer, day, hours)
-  #   max_hours = 6
-  #   assigned_hours = @assign_work_schedules.count { |schedule| schedule[:engineer_id] == engineer.id }
-  #   available_hours = hours.count { |hour| available?(engineer, day, hour) }
-  #   assigned_hours + (max_hours - available_hours)
-  # end
   def count_assigned_hours(engineer, day, hours)
     max_hours = 8
     assigned_hours = @assign_work_schedules.count { |schedule| schedule[:engineer_id] == engineer.id }
