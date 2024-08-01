@@ -55,13 +55,14 @@ class SchedulesController < ApplicationController
   def format_schedule(schedule)
     {
       year: schedule.year, week: schedule.week, hour: schedule.hour,
-      day_of_week_name: day_name(schedule.week, schedule.day_of_week),
+      day_of_week_name: day_name(schedule.year, schedule.week, schedule.day_of_week),
       engineer: schedule.engineer.name, color: schedule.engineer.color
     }
   end
 
-  def day_name(week, day)
-    Date.commercial(Date.today.year, week, day).strftime('%A').downcase
+  def day_name(year, week, day)
+    p year, week, day
+    Date.commercial(year, week, day).strftime('%A').downcase
   end
 
   def weeks
