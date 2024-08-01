@@ -24,7 +24,6 @@
           :engineers="engineers"
           :selected-week="selectedWeek"
           :selected-year="selectedYear"
-          @update-assignment="updateAssignment"
         ></weekly-schedule>
       </v-col>
     </v-row>

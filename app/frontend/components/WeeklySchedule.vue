@@ -26,7 +26,7 @@
                 </tr>
               </template>
               <template v-slot:item.hour="{ item }">
-                <v-chip :color="item.assigned ? 'green' : 'red'">
+                <v-chip :color="isAnyAssigned(day, item.hour)  ? 'green' : 'red'">
                   {{ item.hour }}:00 - {{ item.hour + 1 }}:00
                 </v-chip>
               </template>
@@ -66,7 +66,7 @@
                 </tr>
               </template>
               <template v-slot:[`item.hour`]="{ item }">
-                <v-chip :color="item.assigned ? 'green' : 'red'">
+                <v-chip :color="isAnyAssigned(day, item.hour) ? 'green' : 'red'">
                   {{ item.hour }}:00 - {{ item.hour + 1 }}:00
                 </v-chip>
               </template>
@@ -110,11 +110,14 @@ export default {
     }
   },
   data() {
-    console.log(this.engineerAvailabilities);
     return {
+      availabilities: [...this.engineerAvailabilities],
     };
   },
   computed: {
+    days() {
+      return ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    },
     firstColumnDays() {
       return ['monday', 'wednesday', 'friday', 'sunday'];
     },
@@ -130,13 +133,41 @@ export default {
   },
   methods: {
     updateAssignment(day, hour, engineer) {
-      this.$emit('update-assignment', { day, hour, engineer });
+      // this.$emit('update-assignment', { day, hour, engineer });
+      const availabilityIndex = this.availabilities.findIndex(avail =>
+        avail.day_of_week_name === day &&
+        avail.hour === hour &&
+        avail.engineer === engineer
+      );
+
+      if (availabilityIndex !== -1) {
+        // Remove availability if it exists
+        this.availabilities.splice(availabilityIndex, 1);
+      } else {
+        // Add new availability if it doesn't exist
+        const newAvailability = {
+          year: this.selectedYear,
+          week: this.selectedWeek,
+          day_of_week_name: day,
+          hour: hour,
+          engineer: engineer,
+        };
+        console.log(newAvailability);
+        this.availabilities.push(newAvailability);
+        console.log(this.availabilities);
+      }
+      this.$forceUpdate();
     },
     isAvailable(day, hour, engineerName) {
-      return this.engineerAvailabilities.some(avail =>
+      return this.availabilities.some(avail =>
         avail.day_of_week_name === day &&
         avail.hour === hour &&
         avail.engineer === engineerName
+      );
+    },
+    isAnyAssigned(day, hour) {
+      return this.availabilities.some(avail =>
+        avail.day_of_week_name === day && avail.hour === hour
       );
     },
     capitalize(str) {
@@ -169,6 +200,14 @@ export default {
     engineerColor(engineerName) {
       const engineer = this.engineers.find(engineer => engineer.name === engineerName);
       return engineer ? engineer.color : null;
+    }
+  },
+  watch: {
+    availabilities: {
+      handler() {
+        this.$forceUpdate();
+      },
+      deep: true
     }
   }
 };
