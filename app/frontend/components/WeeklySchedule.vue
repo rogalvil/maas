@@ -80,6 +80,16 @@
             </v-data-table>
           </v-col>
         </v-row>
+        <v-row>
+          <v-col cols="12">
+            <v-btn
+              density="compact"
+              @click="assignWorkSchedules"
+            >
+              Asignar Turnos
+            </v-btn>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
   </v-container>
@@ -186,6 +196,16 @@ export default {
       .catch(error => {
         console.error('Error removing availability', error);
       })
+    },
+    assignWorkSchedules() {
+      axios.post('/engineer_availabilities/assignment', {
+        service_id: this.selectedService,
+        year: this.selectedYear,
+        week: this.selectedWeek
+      })
+      .catch(error => {
+        console.error('Error assigning work schedules', error);
+      });
     },
     updateAssignment(day, hour, engineer) {
       const availabilityIndex = this.availabilities.findIndex(avail =>

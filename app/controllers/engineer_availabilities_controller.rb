@@ -10,35 +10,37 @@ class EngineerAvailabilitiesController < ApplicationController
     end
   end
 
+  def assignment
+    service_id = params[:service_id]
+    year = params[:year]
+    week = params[:week]
+    work_schedule_assignment = WorkScheduleAssignment.new(service_id, year, week)
+    work_schedule_assignment.assign_work_schedules
+    work_schedule_assignment.save_work_schedules
+    render json: { message: 'Turnos asignados exitosamente' }
+  rescue StandardError => e
+    render json: { message: e.message }, status: :unprocessable_entity
+  end
+
   private
 
   def create_engineer_availability
-    p "create"
     @engineer_availability = EngineerAvailability.new(engineer_availability_params)
-    p @engineer_availability.inspect
     if @engineer_availability.save
-      render json: { success: true, engineer_availability: @engineer_availability }
+      render json: { engineer_availability: @engineer_availability }
     else
-      render json: { success: false, errors: @engineer_availability.errors.full_messages }
+      render json: { errors: @engineer_availability.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
   def destroy_engineer_availability
     @engineer_availability = EngineerAvailability.find_by(engineer_availability_params)
-    p @engineer_availability.inspect
     if @engineer_availability.destroy
-      render json: { success: true }
+      render json: { message: 'Eliminado exitosamente' }
     else
-      render json: { success: false, errors: @engineer_availability.errors.full_messages }
+      render json: { errors: @engineer_availability.errors.full_messages }, status: :unprocessable_entity
     end
   end
-
-  # def engineer_availability
-  #   p "params: #{params}"
-  #   # @engineer_availability = EngineerAvailability.find(params[:id])
-  #   @engineer_availability = EngineerAvailability.find_by(engineer_availability_params)
-  #   p @engineer_availability.inspect
-  # end
 
   def engineer_availability_params
     params.require(:engineer_availability).permit(:service_id, :engineer_id, :year, :week, :day_of_week, :hour)

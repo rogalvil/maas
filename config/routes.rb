@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   resources :engineer_availabilities, only: [] do
     collection do
       post :toggle
+      post :assignment
     end
   end
 

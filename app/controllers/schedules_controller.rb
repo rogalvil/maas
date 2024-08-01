@@ -61,7 +61,6 @@ class SchedulesController < ApplicationController
   end
 
   def day_name(year, week, day)
-    p year, week, day
     Date.commercial(year, week, day).strftime('%A').downcase
   end
 
