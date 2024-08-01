@@ -4,7 +4,6 @@
       <v-col cols="12" sm="6">
         <v-row v-for="day in firstColumnDays" :key="day">
           <v-col cols="12">
-            <h3>{{ formatDate(day) }}</h3>
             <v-data-table
               :headers="headers"
               :items="formattedSchedule(day)"
@@ -16,7 +15,7 @@
                 <tr>
                   <template v-for="column in columns" :key="column.key">
                     <th v-if="column.key === 'hour'">
-                      {{ column.title }}
+                      {{ formatDate(day) }}
                     </th>
                     <th v-else>
                       <v-chip :color="engineerColor(column.key)">
@@ -41,7 +40,6 @@
       <v-col cols="12" sm="6">
         <v-row v-for="day in secondColumnDays" :key="day">
           <v-col cols="12">
-            <h3>{{ formatDate(day) }}</h3>
             <v-data-table
               :headers="headers"
               :items="formattedSchedule(day)"
@@ -53,7 +51,7 @@
                 <tr>
                   <template v-for="column in columns" :key="column.key">
                     <th v-if="column.key === 'hour'">
-                      {{ column.title }}
+                      {{ formatDate(day) }}
                     </th>
                     <th v-else>
                       <v-chip :color="engineerColor(column.key)">
@@ -149,7 +147,6 @@ export default {
       return formatted;
     },
     engineerColor(engineerName) {
-      console.log(engineerName);
       const engineer = this.engineers.find(engineer => engineer.name === engineerName);
       return engineer ? engineer.color : null;
     }
