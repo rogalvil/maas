@@ -1,8 +1,7 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
-  resources :blogs
+  get 'confirmed_shifts', to: 'confirmed_shifts#index'
 
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Defines the root path route ("/")
-  root 'blogs#index'
+  root 'confirmed_shifts#index'
 end

@@ -10,8 +10,54 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 0) do
+ActiveRecord::Schema[7.0].define(version: 2024_07_31_205129) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "contract_schedules", force: :cascade do |t|
+    t.bigint "service_id", null: false
+    t.string "day", null: false
+    t.integer "start_time", null: false
+    t.integer "end_time", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["service_id", "day"], name: "index_contract_schedules_on_service_id_and_day", unique: true
+    t.index ["service_id"], name: "index_contract_schedules_on_service_id"
+  end
+
+  create_table "engineers", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "color", default: "#0000FF", null: false
+    t.index ["color"], name: "index_engineers_on_color", unique: true
+  end
+
+  create_table "services", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "work_schedules", force: :cascade do |t|
+    t.bigint "engineer_id", null: false
+    t.bigint "service_id", null: false
+    t.integer "week", null: false
+    t.integer "day_of_week", null: false
+    t.integer "hour", null: false
+    t.boolean "assigned", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "year", null: false
+    t.date "work_date", null: false
+    t.index ["day_of_week"], name: "index_work_schedules_on_day_of_week"
+    t.index ["engineer_id"], name: "index_work_schedules_on_engineer_id"
+    t.index ["service_id"], name: "index_work_schedules_on_service_id"
+    t.index ["work_date"], name: "index_work_schedules_on_work_date"
+    t.index ["year"], name: "index_work_schedules_on_year"
+  end
+
+  add_foreign_key "contract_schedules", "services"
+  add_foreign_key "work_schedules", "engineers"
+  add_foreign_key "work_schedules", "services"
 end

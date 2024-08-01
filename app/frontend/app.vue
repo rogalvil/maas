@@ -1,7 +1,9 @@
 <template>
   <v-app id="vuetify-app">
     <v-app-bar app color="primary" dark>
-      <v-toolbar-title>My App Name</v-toolbar-title>
+      <v-btn text href="/" variant="text">
+        <v-toolbar-title>MaaS</v-toolbar-title>
+      </v-btn>
     </v-app-bar>
     <v-main>
       <v-container fluid class="main-container">
@@ -9,7 +11,7 @@
       </v-container>
     </v-main>
     <v-footer app color="primary" dark>
-      <span class="white--text">&copy; 2024 My Company</span>
+      <span class="white--text">&copy; 2024</span>
     </v-footer>
   </v-app>
 </template>

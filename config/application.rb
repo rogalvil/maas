@@ -19,6 +19,7 @@ require "action_cable/engine"
 Bundler.require(*Rails.groups)
 
 module MaaS
+  # Application class
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
@@ -31,7 +32,13 @@ module MaaS
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
-    # Don't generate system test files.
-    config.generators.system_tests = nil
+    # Generate RSpec tests
+    config.generators do |g|
+      g.test_framework :rspec,
+                       view_specs: false,
+                       helper_specs: false,
+                       routing_specs: true,
+                       controller_specs: false
+    end
   end
 end

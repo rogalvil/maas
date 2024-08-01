@@ -6,8 +6,7 @@ import TurbolinksAdapter from "vue-turbolinks";
 import vuetify from "~/plugins/vuetify";
 
 import App from "~/app";
-const BlogsIndex = defineAsyncComponent(() => import("~/pages/blogs/index"));
-const BlogsShow = defineAsyncComponent(() => import("~/pages/blogs/show"));
+const ConfirmedShifts = defineAsyncComponent(() => import("~/pages/confirmed_shifts/index"));
 
 document.addEventListener("turbo:load", () => {
   const app = createApp({});
@@ -16,8 +15,7 @@ document.addEventListener("turbo:load", () => {
   app.use(vuetify);
 
   app.component("App", App);
-  app.component("BlogsIndex", BlogsIndex);
-  app.component("BlogsShow", BlogsShow);
+  app.component("ConfirmedShifts", ConfirmedShifts);
 
   app.mount("#app");
 });

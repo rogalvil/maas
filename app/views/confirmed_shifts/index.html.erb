@@ -1,0 +1,6 @@
+<confirmed-shifts
+  :services="<%= @services.as_json(include: :contract_schedules).to_json %>"
+  :weeks="<%= @weeks.to_json %>"
+  :engineers="<%= @engineers.to_json %>"
+  :work-schedules="<%= @work_schedules.to_json %>"
+></confirmed-shifts>
