@@ -7,7 +7,7 @@
             <h3>{{ formatDate(day) }}</h3>
             <v-data-table
               :headers="headers"
-              :items="formattedSchedule[day]"
+              :items="formattedSchedule(day)"
               :items-per-page="24"
               density="compact"
               hide-default-footer
@@ -30,7 +30,7 @@
             <h3>{{ formatDate(day) }}</h3>
             <v-data-table
               :headers="headers"
-              :items="formattedSchedule[day]"
+              :items="formattedSchedule(day)"
               :items-per-page="24"
               density="compact"
               hide-default-footer
@@ -54,7 +54,7 @@
           <v-col cols="12">
             <v-data-table
               :headers="headers"
-              :items="formattedSchedule[day]"
+              :items="formattedSchedule(day)"
               :items-per-page="24"
               density="compact"
               hide-default-footer
@@ -78,7 +78,7 @@
 <script>
 export default {
   props: {
-    contactSchedule: {
+    contractSchedule: {
       type: Array,
       required: true
     },
@@ -97,7 +97,7 @@ export default {
   },
   data() {
     return {
-      days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+      // days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
     };
   },
   computed: {
@@ -112,17 +112,6 @@ export default {
         { title: 'Hora', align: 'start', sortable: false, key: 'hour' },
         ...this.engineers.map(engineer => ({ title: engineer.name, align: 'center', sortable: false, key: engineer.name }))
       ];
-    },
-    formattedSchedule() {
-      const formatted = {};
-      this.days.forEach(day => {
-        formatted[day] = [];
-        for (let hour = 0; hour < 24; hour++) {
-          const entry = { hour };
-          formatted[day].push(entry);
-        }
-      });
-      return formatted;
     }
   },
   methods: {
@@ -144,6 +133,17 @@ export default {
       };
       const date = new Date(this.selectedYear, 0, (this.selectedWeek - 1) * 7 + dayMapping[day]);
       return date.toLocaleDateString('es-ES', { weekday: 'long', day: '2-digit', month: 'long' });
+    },
+    formattedSchedule(day) {
+      const daySchedule = this.contractSchedule.find(schedule => schedule.day === day);
+      const formatted = [];
+      if (daySchedule) {
+        for (let hour = daySchedule.start_time; hour < daySchedule.end_time; hour++) {
+          const entry = { hour };
+          formatted.push(entry);
+        }
+      }
+      return formatted;
     }
   }
 };

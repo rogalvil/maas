@@ -19,7 +19,7 @@
     <v-row>
       <v-col cols="12">
         <weekly-schedule
-          :contract-schedule="contactSchedule"
+          :contract-schedule="contractSchedule"
           :engineers="engineers"
           :selected-week="selectedWeek"
           :selected-year="selectedYear"
@@ -56,6 +56,10 @@ export default {
       required: true
     },
     workSchedules: {
+      type: Array,
+      required: true
+    },
+    contractSchedule: {
       type: Array,
       required: true
     }
