@@ -24,6 +24,7 @@
           :engineers="engineers"
           :selected-week="selectedWeek"
           :selected-year="selectedYear"
+          :selected-service="selectedService"
         ></weekly-schedule>
       </v-col>
     </v-row>

@@ -33,7 +33,7 @@
               <template v-for="engineer in engineers" :key="engineer.name" v-slot:[`item.${engineer.name}`]="{ item }">
                 <v-checkbox-btn
                   :model-value="isAvailable(day, item.hour, engineer.name)"
-                  @change="updateAssignment(day, item.hour, engineer.name)"
+                  @change="toggleAvailability(day, item.hour, engineer.name)"
                   density="compact"
                 ></v-checkbox-btn>
               </template>
@@ -73,7 +73,7 @@
               <template v-for="engineer in engineers" :key="engineer.name" v-slot:[`item.${engineer.name}`]="{ item }">
                 <v-checkbox-btn
                   :model-value="isAvailable(day, item.hour, engineer.name)"
-                  @change="updateAssignment(day, item.hour, engineer.name)"
+                  @change="toggleAvailability(day, item.hour, engineer.name)"
                   density="compact"
                 ></v-checkbox-btn>
               </template>
@@ -86,6 +86,9 @@
 </template>
 
 <script>
+import axios from 'axios';
+axios.defaults.headers.common['X-CSRF-Token'] = document.querySelector('[name="csrf-token"]').getAttribute('content');
+
 export default {
   props: {
     engineerAvailabilities: {
@@ -107,6 +110,10 @@ export default {
     selectedYear: {
       type: Number,
       required: true
+    },
+    selectedService: {
+      type: Number,
+      required: true
     }
   },
   data() {
@@ -115,9 +122,6 @@ export default {
     };
   },
   computed: {
-    days() {
-      return ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-    },
     firstColumnDays() {
       return ['monday', 'wednesday', 'friday', 'sunday'];
     },
@@ -129,15 +133,67 @@ export default {
         { title: 'Hora', align: 'start', sortable: false, key: 'hour' },
         ...this.engineers.map(engineer => ({ title: engineer.name, align: 'center', sortable: false, key: engineer.name }))
       ];
-    }
+    },
   },
   methods: {
+    dayMapping(day) {
+      const mapping = {
+        monday: 1,
+        tuesday: 2,
+        wednesday: 3,
+        thursday: 4,
+        friday: 5,
+        saturday: 6,
+        sunday: 7
+      };
+      return mapping[day];
+    },
+    toggleAvailability(day, hour, engineer) {
+      const isAdded = this.updateAssignment(day, hour, engineer);
+      if (isAdded) {
+        this.addAvailability(day, hour, engineer);
+      } else {
+        this.removeAvailability(day, hour, engineer);
+      }
+    },
+    prepareParams: function(day, hour, engineer) {
+      const enginerId = this.engineers.find(e => e.name === engineer).id
+      return {
+        engineer_id: enginerId,
+        service_id: this.selectedService,
+        year: this.selectedYear,
+        week: this.selectedWeek,
+        day_of_week: this.dayMapping(day),
+        hour: hour,
+      };
+    },
+    addAvailability(day, hour, engineer) {
+      const params = this.prepareParams(day, hour, engineer);
+      axios.post('/engineer_availabilities/toggle', {
+        ...params,
+        available: 'create'
+      })
+      .catch(error => {
+        console.error('Error creating availability', error);
+      });
+    },
+    removeAvailability(day, hour, engineer) {
+      const params = this.prepareParams(day, hour, engineer);
+      axios.post('/engineer_availabilities/toggle', {
+        ...params,
+        available: 'destroy'
+      })
+      .catch(error => {
+        console.error('Error removing availability', error);
+      })
+    },
     updateAssignment(day, hour, engineer) {
       const availabilityIndex = this.availabilities.findIndex(avail =>
         avail.day_of_week_name === day &&
         avail.hour === hour &&
         avail.engineer === engineer
       );
+      let isAvailable = false;
       if (availabilityIndex !== -1) {
         this.availabilities.splice(availabilityIndex, 1);
       } else {
@@ -149,8 +205,10 @@ export default {
           engineer: engineer,
         };
         this.availabilities.push(newAvailability);
+        isAvailable = true;
       }
       this.$forceUpdate();
+      return isAvailable;
     },
     isAvailable(day, hour, engineerName) {
       return this.availabilities.some(avail =>
@@ -168,16 +226,7 @@ export default {
       return str.charAt(0).toUpperCase() + str.slice(1);
     },
     formatDate(day) {
-      const dayMapping = {
-        monday: 1,
-        tuesday: 2,
-        wednesday: 3,
-        thursday: 4,
-        friday: 5,
-        saturday: 6,
-        sunday: 7
-      };
-      const date = new Date(this.selectedYear, 0, (this.selectedWeek - 1) * 7 + dayMapping[day]);
+      const date = new Date(this.selectedYear, 0, (this.selectedWeek - 1) * 7 + this.dayMapping(day));
       return date.toLocaleDateString('es-ES', { weekday: 'long', day: '2-digit', month: 'long' });
     },
     formattedSchedule(day) {
