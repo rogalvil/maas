@@ -24,28 +24,24 @@ class WeeklyAvailabilityController < ApplicationController
   end
 
   def work_schedules
-    p @selected_year
-    p @selected_week
-    start_date = Date.commercial(@selected_year, @selected_week, 1)
-    end_date = Date.commercial(@selected_year, @selected_week, 7)
-
     @work_schedules = WorkSchedule.where(
       service_id: @selected_service_id,
-      work_date: start_date..end_date
-    ).includes(:engineer).map do |schedule|
-      {
-        id: schedule.id,
-        year: schedule.year,
-        week: schedule.week,
-        day_of_week: schedule.day_of_week,
-        day_of_week_name: day_name(schedule.week, schedule.day_of_week),
-        hour: schedule.hour,
-        assigned: schedule.assigned,
-        work_date: schedule.work_date,
-        engineer: schedule.engineer.name,
-        color: schedule.engineer.color
-      }
-    end
+      work_date: selected_date_range
+    ).includes(:engineer).map { |schedule| format_schedule(schedule) }
+  end
+
+  def selected_date_range
+    start_date = Date.commercial(@selected_year, @selected_week, 1)
+    end_date = Date.commercial(@selected_year, @selected_week, 7)
+    start_date..end_date
+  end
+
+  def format_schedule(schedule)
+    {
+      year: schedule.year, week: schedule.week, hour: schedule.hour,
+      day_of_week_name: day_name(schedule.week, schedule.day_of_week),
+      engineer: schedule.engineer.name, color: schedule.engineer.color
+    }
   end
 
   def day_name(week, day)
@@ -54,7 +50,16 @@ class WeeklyAvailabilityController < ApplicationController
 
   def weeks
     current_date = Date.today
-    @weeks = (0..160).map { |i| week_info(current_date + (i * 7)) }
+    past_weeks = past_work_schedules_weeks
+    future_weeks = (0..5).map { |i| week_info(current_date + (i * 7)) }
+    @weeks = (past_weeks + future_weeks).uniq.sort_by { |week| [week[:year], week[:value]] }
+  end
+
+  def past_work_schedules_weeks
+    WorkSchedule.distinct.pluck(:year, :week).map do |year, week|
+      date = Date.commercial(year, week, 1)
+      week_info(date)
+    end
   end
 
   def week_info(date)
