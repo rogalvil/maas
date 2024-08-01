@@ -133,18 +133,14 @@ export default {
   },
   methods: {
     updateAssignment(day, hour, engineer) {
-      // this.$emit('update-assignment', { day, hour, engineer });
       const availabilityIndex = this.availabilities.findIndex(avail =>
         avail.day_of_week_name === day &&
         avail.hour === hour &&
         avail.engineer === engineer
       );
-
       if (availabilityIndex !== -1) {
-        // Remove availability if it exists
         this.availabilities.splice(availabilityIndex, 1);
       } else {
-        // Add new availability if it doesn't exist
         const newAvailability = {
           year: this.selectedYear,
           week: this.selectedWeek,
@@ -152,9 +148,7 @@ export default {
           hour: hour,
           engineer: engineer,
         };
-        console.log(newAvailability);
         this.availabilities.push(newAvailability);
-        console.log(this.availabilities);
       }
       this.$forceUpdate();
     },
