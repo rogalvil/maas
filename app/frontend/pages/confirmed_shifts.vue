@@ -16,7 +16,7 @@
         ></week-selector>
       </v-col>
       <v-col cols="12" sm="4">
-        <v-btn text href="/weekly_availabilities" size="small">
+        <v-btn text :href="availabilityUrl" size="small">
           Editar disponibilidad
         </v-btn>
       </v-col>
@@ -31,7 +31,12 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <schedule-table :schedule="schedule" :items-per-page="itemsPerPage"></schedule-table>
+        <schedule-table
+          :schedule="schedule"
+          :items-per-page="itemsPerPage"
+          :selected-week="selectedWeek"
+          :selected-year="selectedYear"
+        ></schedule-table>
       </v-col>
     </v-row>
   </v-container>
@@ -78,6 +83,9 @@ export default {
     };
   },
   computed: {
+    availabilityUrl() {
+      return `/weekly_availabilities?service_id=${this.selectedService}&week=${this.selectedWeek}&year=${this.selectedYear}`;
+    },
     totalHoursPerWeek() {
       const selectedService = this.services.find(service => service.id === this.selectedService);
       if (!selectedService) return 0;

@@ -83,7 +83,7 @@
         <v-row>
           <v-col cols="12">
             <v-btn
-              density="compact"
+              size="small"
               @click="assignWorkSchedules"
             >
               Asignar Turnos
