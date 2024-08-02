@@ -42,7 +42,7 @@ export default {
     headers() {
       return [
         { title: '', align: 'start', sortable: false, key: 'hour' },
-        ...this.days.map(day => ({,
+        ...this.days.map(day => ({
           title: this.formatDate(day),
           align: 'center',
           sortable: false,
