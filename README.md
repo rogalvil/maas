@@ -256,3 +256,6 @@ The project is divided into two main pages:
 
 - I also believe that previous weeks should possibly not be editable, but this
   has not been developed either.
+
+- There were also some missing system tests, component tests, as well as tests
+  for the services used.
