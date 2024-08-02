@@ -6,7 +6,9 @@ import TurbolinksAdapter from "vue-turbolinks";
 import vuetify from "~/plugins/vuetify";
 
 import App from "~/app";
-const ConfirmedShifts = defineAsyncComponent(() => import("~/pages/confirmed_shifts/index"));
+
+const ConfirmedShifts = defineAsyncComponent(() => import("~/pages/confirmed_shifts"));
+const WeeklyAvailabilities = defineAsyncComponent(() => import("~/pages/weekly_availabilities"));
 
 document.addEventListener("turbo:load", () => {
   const app = createApp({});
@@ -16,6 +18,7 @@ document.addEventListener("turbo:load", () => {
 
   app.component("App", App);
   app.component("ConfirmedShifts", ConfirmedShifts);
+  app.component("WeeklyAvailabilities", WeeklyAvailabilities);
 
   app.mount("#app");
 });

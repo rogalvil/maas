@@ -25,6 +25,14 @@ export default {
     itemsPerPage: {
       type: Number,
       required: true
+    },
+    selectedWeek: {
+      type: Number,
+      required: true
+    },
+    selectedYear: {
+      type: Number,
+      required: true
     }
   },
   computed: {
@@ -33,8 +41,13 @@ export default {
     },
     headers() {
       return [
-        { title: 'Hour', align: 'start', sortable: false, key: 'hour' },
-        ...this.days.map(day => ({ title: day.charAt(0).toUpperCase() + day.slice(1), align: 'center', sortable: false, key: day }))
+        { title: '', align: 'start', sortable: false, key: 'hour' },
+        ...this.days.map(day => ({
+          title: this.formatDate(day),
+          align: 'center',
+          sortable: false,
+          key: day
+        }))
       ];
     },
     formattedSchedule() {
@@ -49,6 +62,23 @@ export default {
     }
   },
   methods: {
+    dayMapping(day) {
+      const mapping = {
+        monday: 1,
+        tuesday: 2,
+        wednesday: 3,
+        thursday: 4,
+        friday: 5,
+        saturday: 6,
+        sunday: 7
+      };
+      return mapping[day];
+    },
+    formatDate(day) {
+      console.log(day, this.selectedYear, this.selectedWeek, this.dayMapping(day));
+      const date = new Date(this.selectedYear, 0, (this.selectedWeek - 1) * 7 + this.dayMapping(day));
+      return date.toLocaleDateString('es-ES', { weekday: 'short', day: '2-digit', month: 'short' });
+    },
   }
 };
 </script>
