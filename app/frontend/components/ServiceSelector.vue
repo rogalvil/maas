@@ -1,5 +1,6 @@
 <template>
   <v-select
+    label="Selecciona un servicio"
     v-model="internalSelectedService"
     :items="services"
     item-title="name"

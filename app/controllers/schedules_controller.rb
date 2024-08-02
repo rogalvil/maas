@@ -14,9 +14,9 @@ class SchedulesController < ApplicationController
   private
 
   def defaults
-    @selected_service_id = params[:service_id] || Service.first&.id
-    @selected_week = (params[:week] || Date.today.cweek).to_i
-    @selected_year = (params[:year] || Date.today.year).to_i
+    @selected_service_id = params[:service_id]
+    @selected_week = params[:week].to_i
+    @selected_year = params[:year].to_i
   end
 
   def services
@@ -41,16 +41,16 @@ class SchedulesController < ApplicationController
 
   def work_schedules
     @work_schedules = WorkSchedule.where(
-      service_id: @selected_service_id,
-      work_date: selected_date_range
+      service_id: @selected_service_id, week: @selected_week, year: @selected_year
+      # work_date: selected_date_range
     ).includes(:engineer).map { |schedule| format_schedule(schedule) }
   end
 
-  def selected_date_range
-    start_date = Date.commercial(@selected_year, @selected_week, 1)
-    end_date = Date.commercial(@selected_year, @selected_week, 7)
-    start_date..end_date
-  end
+  # def selected_date_range
+  #   start_date = Date.commercial(@selected_year, @selected_week, 1)
+  #   end_date = Date.commercial(@selected_year, @selected_week, 7)
+  #   start_date..end_date
+  # end
 
   def format_schedule(schedule)
     {
