@@ -34,15 +34,19 @@ If you have the Dev Containers extension installed.
 
 https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers
 
-You should see a prompt in the bottom right corner asking if you want to reopen the project in a container. Click "Reopen in Container".
+You should see a prompt in the bottom right corner asking if you want to reopen
+the project in a container. Click "Reopen in Container".
 
 ![Screenshot 2024-06-26 at 7 07 28 a m](https://github.com/rogalvil/tgc/assets/695923/666428ad-6cda-44a2-8650-da9e0b3659dd)
 
-If you don't see the prompt, you can open the Command Palette (Ctrl+Shift+P or Cmd+Shift+P on macOS) and select "Remote-Containers: Reopen in Container".
+If you don't see the prompt, you can open the Command Palette
+(Ctrl+Shift+P or Cmd+Shift+P on macOS) and select "Remote-Containers: Reopen in Container".
 
 4. **Wait for the container to build and start:**
 
-The first time you open the project in a container, it will build the Docker image specified in the `Dockerfile` and set up the development environment. This may take a few minutes.
+The first time you open the project in a container, it will build the Docker
+image specified in the `Dockerfile` and set up the development environment. This
+may take a few minutes.
 
 5. **Set up the database:**
 
@@ -90,7 +94,8 @@ To run the test suite, use the following command in the terminal:
 rspec
 ```
 
-By following these steps, you should be able to set up and run the project using a DevContainer in Visual Studio Code.
+By following these steps, you should be able to set up and run the project
+using a DevContainer in Visual Studio Code.
 
 ## How to Run with Docker
 
@@ -132,7 +137,8 @@ Inside the containers in bash mode you need to migrate the database:
 rails db:create db:migrate
 ```
 
-Or once the containers are up and running, you need to create and migrate the database. Open a new terminal window and run:
+Or once the containers are up and running, you need to create and migrate the
+database. Open a new terminal window and run:
 
 ```
 docker-compose exec development rails db:create db:migrate
@@ -146,7 +152,8 @@ Inside the containers in bash mode you need to migrate the database:
 rails credentials:edit
 ```
 
-Or once the containers are up and running, you need to create the master.key file. Open a new terminal window and run:
+Or once the containers are up and running, you need to create the master.key
+file. Open a new terminal window and run:
 
 ```
 docker-compose exec development rails credentials:edit
@@ -164,7 +171,8 @@ To run the test suite, use the following command in bash mode:
 rspec
 ```
 
-Or once the containers are up and running, you can run the tests using the following command in a new terminal window
+Or once the containers are up and running, you can run the tests using the
+following command in a new terminal window
 
 ```
 docker-compose exec development rspec
@@ -178,4 +186,44 @@ To stop the running containers, use:
 docker-compose down development
 ```
 
-By following these steps, you should be able to set up and run the project using Docker.
+By following these steps, you should be able to set up and run the project using
+Docker.
+
+## Pages
+
+The project is divided into two main pages:
+
+1. Confirmed Shifts: This page shows a list of confirmed shifts. It is possible
+   to filter by service and week.
+
+2. Weekly Availability: This page sets up the weekly availability for a service.
+   It allows the user to select available hours for each engineer and also
+   generates a work schedule for the week.
+
+## Components
+
+1. **Engineer Hours:** This component allows the user to view a list of
+   engineers with a summary of the hours assigned to them.
+
+![Screenshot 2024-08-01 at 7 22 31 p m](https://github.com/user-attachments/assets/5692e3d0-f53f-4048-9f36-1dcfa0509cc2)
+
+2. **Schedule Table:** This component displays a table with the work schedule
+   for the week. It shows the shifts assigned to each engineer.
+
+![Screenshot 2024-08-01 at 7 23 41 p m](https://github.com/user-attachments/assets/a2644203-4e43-4628-afb2-e9935ec7ddf4)
+
+3. **Service Selector:** This component allows the user to select a service from
+   a dropdown list.
+
+![Screenshot 2024-08-01 at 7 24 40 p m](https://github.com/user-attachments/assets/301f471f-8d44-43aa-b3e9-45c0bab62a93)
+
+4. **Weekly Schedule:** This component allow to setup the weekly availability
+   for a service. It allows the user to select available hours for each engineer
+   and also generates a work schedule for the week.
+
+![Screenshot 2024-08-01 at 7 26 35 p m](https://github.com/user-attachments/assets/cf62275e-e458-4a23-a46f-f42c08941227)
+
+5. **Week Selector:** This component allows the user to select a week from a
+   dropdown list.
+
+![Screenshot 2024-08-01 at 7 24 45 p m](https://github.com/user-attachments/assets/cd491571-0d87-4564-a074-dc8f2602349a)
