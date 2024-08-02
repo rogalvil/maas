@@ -1,6 +1,11 @@
 <template>
   <v-container>
     <v-row>
+      <v-col cols="12">
+        <h2>Turnos confirmados</h2>
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col cols="12" sm="4">
         <service-selector
           :services="services"
@@ -16,7 +21,11 @@
         ></week-selector>
       </v-col>
       <v-col cols="12" sm="4">
-        <v-btn text :href="availabilityUrl" size="small">
+        <v-btn
+          v-if="selectedService && selectedWeek && selectedYear"
+          text :href="availabilityUrl"
+          size="small"
+        >
           Editar disponibilidad
         </v-btn>
       </v-col>
@@ -24,6 +33,7 @@
     <v-row>
       <v-col cols="12">
         <engineer-hours
+          v-if="selectedService && selectedWeek && selectedYear"
           :engineers="engineersWithHours"
           :total-hours-per-week="totalHoursPerWeek"
         ></engineer-hours>
@@ -32,6 +42,7 @@
     <v-row>
       <v-col cols="12">
         <schedule-table
+          v-if="selectedService && selectedWeek && selectedYear"
           :schedule="schedule"
           :items-per-page="itemsPerPage"
           :selected-week="selectedWeek"
@@ -75,9 +86,9 @@ export default {
   },
   data() {
     return {
-      selectedService: parseInt(new URLSearchParams(window.location.search).get('service_id')) || this.services[0]?.id || null,
-      selectedWeek: parseInt(new URLSearchParams(window.location.search).get('week')) || this.getCurrentWeek().value || null,
-      selectedYear: parseInt(new URLSearchParams(window.location.search).get('year')) || this.getCurrentWeek().year || null,
+      selectedService: parseInt(new URLSearchParams(window.location.search).get('service_id')) || undefined,
+      selectedWeek: parseInt(new URLSearchParams(window.location.search).get('week')) || undefined,
+      selectedYear: parseInt(new URLSearchParams(window.location.search).get('year')) || undefined,
       schedule: {},
       itemsPerPage: 0
     };
@@ -183,7 +194,9 @@ export default {
       url.searchParams.set('service_id', this.selectedService);
       url.searchParams.set('week', this.selectedWeek);
       url.searchParams.set('year', this.selectedYear);
-      window.location.href = url.toString();
+      if (this.selectedService && this.selectedWeek && this.selectedYear) {
+        window.location.href = url.toString();
+      }
     }
   },
   mounted() {

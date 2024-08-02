@@ -1,5 +1,6 @@
 <template>
   <v-select
+    label="Selecciona una semana"
     v-model="internalSelectedWeek"
     :items="weeks"
     item-title="label"
@@ -23,6 +24,7 @@ export default {
     }
   },
   data() {
+    console.log(this.selectedWeek);
     return {
       internalSelectedWeek: this.selectedWeek
     };

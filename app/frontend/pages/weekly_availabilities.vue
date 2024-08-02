@@ -1,24 +1,39 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12" sm="6">
+      <v-col cols="12">
+        <h2>Disponibilidad semanal</h2>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" sm="4">
         <service-selector
           :services="services"
           :selected-service="selectedService"
           @update:selectedService="updateSelectedService"
         ></service-selector>
       </v-col>
-      <v-col cols="12" sm="6">
+      <v-col cols="12" sm="4">
         <week-selector
           :weeks="weeks"
           :selected-week="selectedWeek"
           @update:selectedWeek="updateSelectedWeek"
         ></week-selector>
       </v-col>
+      <v-col cols="12" sm="4">
+        <v-btn
+          v-if="selectedService && selectedWeek && selectedYear"
+          text :href="confirmedShiftUrl"
+          size="small"
+        >
+          Turnos confirmados
+        </v-btn>
+      </v-col>
     </v-row>
     <v-row>
       <v-col cols="12">
         <weekly-schedule
+          v-if="selectedService && selectedWeek && selectedYear"
           :engineer-availabilities="engineerAvailabilities"
           :contract-schedule="contractSchedule"
           :engineers="engineers"
@@ -70,12 +85,15 @@ export default {
   },
   data() {
     return {
-      selectedService: parseInt(new URLSearchParams(window.location.search).get('service_id')) || this.services[0]?.id || null,
-      selectedWeek: parseInt(new URLSearchParams(window.location.search).get('week')) || this.getCurrentWeek().value || null,
-      selectedYear: parseInt(new URLSearchParams(window.location.search).get('year')) || this.getCurrentWeek().year || null,
+      selectedService: parseInt(new URLSearchParams(window.location.search).get('service_id')) || undefined,
+      selectedWeek: parseInt(new URLSearchParams(window.location.search).get('week')) || undefined,
+      selectedYear: parseInt(new URLSearchParams(window.location.search).get('year')) || undefined,
     };
   },
   computed: {
+    confirmedShiftUrl() {
+      return `/?service_id=${this.selectedService}&week=${this.selectedWeek}&year=${this.selectedYear}`;
+    },
   },
   methods: {
     getCurrentWeek() {
@@ -101,7 +119,9 @@ export default {
       url.searchParams.set('service_id', this.selectedService);
       url.searchParams.set('week', this.selectedWeek);
       url.searchParams.set('year', this.selectedYear);
-      window.location.href = url.toString();
+      if (this.selectedService && this.selectedWeek && this.selectedYear) {
+        window.location.href = url.toString();
+      }
     }
   },
   mounted() {

@@ -56,6 +56,12 @@ Once the container is up and running, open a new terminal in VS Code and run:
 rails db:create db:migrate
 ```
 
+and run to seed the database with engineers and services:
+
+```
+rails db:seed
+```
+
 6. Create master.key file, you can use the following command:
 
 ```
@@ -137,11 +143,23 @@ Inside the containers in bash mode you need to migrate the database:
 rails db:create db:migrate
 ```
 
+and run to seed the database with engineers and services:
+
+```
+rails db:seed
+```
+
 Or once the containers are up and running, you need to create and migrate the
 database. Open a new terminal window and run:
 
 ```
 docker-compose exec development rails db:create db:migrate
+```
+
+and run to seed the database with engineers and services:
+
+```
+docker-compose exec development rails db:seed
 ```
 
 7. Create master.key file, you can use the following command:
@@ -227,3 +245,17 @@ The project is divided into two main pages:
    dropdown list.
 
 ![Screenshot 2024-08-01 at 7 24 45 p m](https://github.com/user-attachments/assets/cd491571-0d87-4564-a074-dc8f2602349a)
+
+## Issues
+
+- The assignment of schedules from weekly availability was uncertain about when to
+  execute it. I consider that it would be good to execute it with sidekiq and
+  sidekiq-unique-jobs to avoid multiple executions, but for now, I haven’t
+  developed it. Therefore, for now, a button "ASIGNAR TURNOS" must be pressed to
+  perform the action manually.
+
+- I also believe that previous weeks should possibly not be editable, but this
+  has not been developed either.
+
+- There were also some missing system tests, component tests, as well as tests
+  for the services used.
