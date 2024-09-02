@@ -1,5 +1,6 @@
 <template>
   <v-data-table
+    id="engineer-hours-table"
     :headers="headers"
     :items="engineersWithUnassigned"
     :items-per-page="engineersWithUnassigned.length"
